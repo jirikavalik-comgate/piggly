@@ -75,13 +75,13 @@ module Piggly
       def purge_source(config)
         path = source_path(config)
 
-        FileUtils.rm_r(path) if File.exists?(path)
+        FileUtils.rm_r(path) if File.exist?(path)
 
         file = Compiler::TraceCompiler.new(config).cache_path(path)
-        FileUtils.rm_r(file) if File.exists?(file)
+        FileUtils.rm_r(file) if File.exist?(file)
 
         file = Reporter::Base.new(config).report_path(path, ".html")
-        FileUtils.rm_r(file) if File.exists?(file)
+        FileUtils.rm_r(file) if File.exist?(file)
       end
 
       # @return [SkeletonProcedure]

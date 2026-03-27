@@ -6,7 +6,7 @@ module Piggly
 
     it "can parse a GET DIAGNOSTICS statement" do
       node = parse(:statement, "GET DIAGNOSTICS v_cnt = ROw_COUNT;")
-      node.should be_statement
+      expect(node).to be_statement
     end
 
 	it "can parse a procedure with GET DIAGNOSTICS" do
@@ -32,9 +32,9 @@ module Piggly
       SQL
 
       node = parse(:start, body.strip.downcase)
-      node.count{|e| e.sql? }.should == 1
-      node.count{|e| Parser::Nodes::Raise === e }.should == 1
-      node.count{|e| Parser::Nodes::Return === e }.should == 1
+      expect(node.count{|e| e.sql? }).to eq(1)
+      expect(node.count{|e| Parser::Nodes::Raise === e }).to eq(1)
+      expect(node.count{|e| Parser::Nodes::Return === e }).to eq(1)
     end
 
   end

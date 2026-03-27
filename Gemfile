@@ -1,15 +1,15 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
-gem "pg",           "~> 1.4.0"  # pg 1.5+ requires Ruby >= 3.0
+gem "pg",           "~> 1.5"
 gem "treetop",      "~> 1.4.14"
 
 group :test, :development do
-  gem "rake", "~> 10.5",              :require => false
+  gem "rake", "~> 13.0",              :require => false
 end
 
 group :test do
   gem "test-unit"
-  gem "rspec",        "~> 2.8.0", :require => false
-  gem "activerecord", "~> 5.2.8", :require => false
-  gem "simplecov",    "~> 0.15.1",:require => false
+  gem "rspec",        "~> 3.12",  :require => false
+  gem "activerecord", "~> 7.0",   :require => false
+  gem "simplecov",    "~> 0.22",  :require => false
 end

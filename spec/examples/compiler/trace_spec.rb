@@ -12,15 +12,15 @@ describe Compiler::Trace, "with terminal root node" do
 
   it "compiles to original terminal" do
     code, _ = @compiler.compile(@tree)
-    code.should eql('code')
+    expect(code).to eql('code')
   end
 
   it "compiles to single block sequence" do
     code, data = @compiler.compile(@tree)
     blocks = data[:blocks].flatten
 
-    blocks.size.should eql(1)
-    blocks.first.should eql([:root, 0..code.size - 1])
+    expect(blocks.size).to eql(1)
+    expect(blocks.first).to eql([:root, 0..code.size - 1])
   end
 end
 
@@ -37,16 +37,16 @@ describe Compiler::Trace, "with regular root node" do
 
   it "compiles" do
     code, _ = @compiler.compile(@tree)
-    code.should eql('statement' * 6)
+    expect(code).to eql('statement' * 6)
   end
 
   it "flattens" do
     code, data = @compiler.compile(@tree)
     blocks  = data[:blocks].flatten
-    blocks.size.should eql(1)
+    expect(blocks.size).to eql(1)
 
     # compiled code has no added instrumentation
-    blocks.first.should eql([:root, 0..code.size - 1])
+    expect(blocks.first).to eql([:root, 0..code.size - 1])
   end
 end
 
@@ -73,24 +73,24 @@ describe Compiler::Trace, "root node contains branches" do
     blocks = data[:blocks].flatten
 
     first = blocks.select{|id, interval| id == 1 }.map{|e| e.last }
-    first.size.should eql(1)
-    'consequence'.size.should eql(first[0].end - first[0].begin)
+    expect(first.size).to eql(1)
+    expect('consequence'.size).to eql(first[0].end - first[0].begin)
 
     second = blocks.select{|id, interval| id == 2 }.map{|e| e.last }
-    second.size.should eql(1)
-    'consequence'.size.should eql(second[0].end - second[0].begin)
+    expect(second.size).to eql(1)
+    expect('consequence'.size).to eql(second[0].end - second[0].begin)
 
     roots = blocks.select{|id, interval| id == :root }.map{|e| e.last }
-    roots.size.should eql(3) # root <consequence> root <consequence> root
+    expect(roots.size).to eql(3) # root <consequence> root <consequence> root
 
     # compiled code size = source code size + instrumentation code size
-    roots.first.begin.should eql(0)
-    roots.last.end.should eql(code.size - ("raise notice 'PIGGLY-file.sql-n';\n".size * 2) - 1)
+    expect(roots.first.begin).to eql(0)
+    expect(roots.last.end).to eql(code.size - ("raise notice 'PIGGLY-file.sql-n';\n".size * 2) - 1)
   end
 
   it "compiles" do
     code, _ = @compiler.compile(@tree)
-    code.should eql(%w[statement-1;
+    expect(code).to eql(%w[statement-1;
                        if-1 condition then
                          raise notice 'PIGGLY-file.sql-1';\n
                          consequence
@@ -106,7 +106,7 @@ describe Compiler::Trace, "root node contains branches" do
     Config.trace_prefix = 'PREFIX'
     
     code, _ = @compiler.compile(@tree)
-    code.should eql(%w[statement-1;
+    expect(code).to eql(%w[statement-1;
                        if-1 condition then
                          raise notice 'PREFIX-file.sql-1';\n
                          consequence

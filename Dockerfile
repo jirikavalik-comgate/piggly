@@ -1,6 +1,4 @@
-# Ruby 2.7 is required: rspec ~> 2.8.0 and activerecord ~> 5.2.8 are
-# incompatible with Ruby 3.x keyword argument changes.
-FROM ruby:2.7-slim
+FROM ruby:3.3-slim
 
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \

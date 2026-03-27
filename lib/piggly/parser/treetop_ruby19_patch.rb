@@ -5,7 +5,7 @@ module Treetop
       class Regexp < ::Regexp
         def initialize(*args)
           if args.size == 1
-            super(args.first, nil, 'n')
+            super(args.first, Regexp::NOENCODING)
           else
             super
           end

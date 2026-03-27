@@ -39,7 +39,7 @@ module Piggly
              piggly/database.json
              config/database.json))
 
-        path = files.find{|x| File.exists?(x) } or
+        path = files.find{|x| File.exist?(x) } or
           raise "No database config files found: #{files.join(", ")}"
 
         specs =

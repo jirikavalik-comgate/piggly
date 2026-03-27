@@ -1,8 +1,4 @@
-begin
-  require "spec"
-rescue LoadError
-  require "rspec"
-end
+require "rspec"
 
 require "ostruct"
 require File.expand_path("#{File.dirname(__FILE__)}/../lib/piggly")

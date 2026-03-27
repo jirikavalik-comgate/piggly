@@ -8,8 +8,8 @@ module Piggly
     describe "single variable declarations" do
       it "parse successfully" do
         node = parse(:stmtDeclare, "declare t text;")
-        node.count{|e| e.identifier? }.should == 1
-        node.count{|e| e.datatype? }.should == 1
+        expect(node.count{|e| e.identifier? }).to eq(1)
+        expect(node.count{|e| e.datatype? }).to eq(1)
       end
 
       it "allows an initial assignment" do

@@ -8,32 +8,32 @@ module Piggly
     describe "assignment statements" do
       it "parse successfully" do
         node = parse(:statement, "a := 10;")
-        node.should be_statement
-        node.count{|e| e.assignment? }.should == 1
+        expect(node).to be_statement
+        expect(node.count{|e| e.assignment? }).to eq(1)
 
-        node.find{|e| e.named? :lval }.should be_a(Parser::Nodes::Assignable)
-        node.find{|e| e.named? :rval }.should be_expression
+        expect(node.find{|e| e.named? :lval }).to be_a(Parser::Nodes::Assignable)
+        expect(node.find{|e| e.named? :rval }).to be_expression
       end
 
       it "must end with a semicolon" do
-        lambda { parse_some(:statement, 'a := 10') }.should raise_error
-        lambda { parse(:statement, 'a := 10') }.should raise_error
+        expect{ parse_some(:statement, 'a := 10') }.to raise_error
+        expect{ parse(:statement, 'a := 10') }.to raise_error
       end
 
       it "can use := or =" do
         a = parse(:statement, "a := 10;")
-        a.should be_statement
-        a.count{|e| e.assignment? }.should == 1
+        expect(a).to be_statement
+        expect(a.count{|e| e.assignment? }).to eq(1)
 
         b = parse(:statement, "a = 10;")
-        b.should be_statement
-        b.count{|e| e.assignment? }.should == 1
+        expect(b).to be_statement
+        expect(b.count{|e| e.assignment? }).to eq(1)
       end
 
       it "can assign strings" do
         node = parse(:statement, "a := 'string';")
         rval = node.find{|e| e.named? :rval }
-        rval.count{|e| e.string? }.should == 1
+        expect(rval.count{|e| e.string? }).to eq(1)
       end
 
       it "can assign value expressions containing comments" do
@@ -42,14 +42,14 @@ module Piggly
          'a := 10 /* comment */ + 10;'].test_each do |s|
           node = parse(:statement, s)
           rval = node.find{|e| e.named? :rval }
-          rval.count{|e| e.comment? }.should == 1
+          expect(rval.count{|e| e.comment? }).to eq(1)
         end
       end
 
       it "can assign value expressions containing strings" do
         node = parse(:statement, "a := 'Hello,' || space || 'world';")
         rval = node.find{|e| e.named? :rval }
-        rval.count{|e| e.string? }.should == 2
+        expect(rval.count{|e| e.string? }).to eq(2)
       end
 
       it "can assign value expressions containing comments and strings" do
@@ -62,7 +62,7 @@ module Piggly
                 GROUP BY /* pk ; 'abc' */ fk);
         SQL
         rval = node.find{|e| e.named? :rval }
-        rval.count{|e| e.string? }.should == 2
+        expect(rval.count{|e| e.string? }).to eq(2)
       end
     end
 

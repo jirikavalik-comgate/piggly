@@ -7,15 +7,15 @@ module Piggly
     describe "SQL statements" do
       it "parse successfully" do
         node, rest = parse_some(:statement, 'SELECT id FROM users;')
-        node.should be_statement
-        node.count{|e| e.sql? }.should == 1
-        node.find{|e| e.sql? }.source_text.should == 'SELECT id FROM users;'
-        rest.should == ''
+        expect(node).to be_statement
+        expect(node.count{|e| e.sql? }).to eq(1)
+        expect(node.find{|e| e.sql? }.source_text).to eq('SELECT id FROM users;')
+        expect(rest).to eq('')
       end
 
       it "must end with a semicolon" do
-        lambda{ parse(:statement, 'SELECT id FROM users') }.should raise_error
-        lambda{ parse_some(:statement, 'SELECT id FROM users') }.should raise_error
+        expect{ parse(:statement, 'SELECT id FROM users') }.to raise_error
+        expect{ parse_some(:statement, 'SELECT id FROM users') }.to raise_error
       end
 
       it "can contain comments" do
@@ -27,21 +27,21 @@ module Piggly
             AND u.id = 100;
         SQL
         sql = node.find{|e| e.sql? }
-        sql.count{|e| e.comment? }.should == 2
+        expect(sql.count{|e| e.comment? }).to eq(2)
       end
 
       it "can be followed by comments" do
         node, rest = parse_some(:statement, 'SELECT id FROM users; -- comment')
         node.find{|e| e.sql? }.source_text == 'SELECT id FROM users;'
-        node.tail.source_text.should == ' -- comment'
-        rest.should == ''
+        expect(node.tail.source_text).to eq(' -- comment')
+        expect(rest).to eq('')
       end
       
       it "can be followed by whitespace" do
         node, rest = parse_some(:statement, "SELECT id FROM users;    \n")
         node.find{|e| e.sql? }.source_text == 'SELECT id FROM users;'
-        node.tail.source_text.should == "    \n"
-        rest.should == ''
+        expect(node.tail.source_text).to eq("    \n")
+        expect(rest).to eq('')
       end
 
       it "can contain strings" do
@@ -52,7 +52,7 @@ module Piggly
              OR last_name ILIKE '%b%';
         SQL
         sql = node.find{|e| e.sql? }
-        sql.count{|e| e.string? }.should == 2
+        expect(sql.count{|e| e.string? }).to eq(2)
       end
 
       it "can contain strings and comments" do

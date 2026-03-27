@@ -8,64 +8,64 @@ module Piggly
     context "with declare" do
       it "doesn't require a space before the := symbol" do
         node, rest = parse_some(:stmtDeclare, "declare a text:= 10; begin")
-      # node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+      # expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "doesn't require a space after the := symbol" do
         node, rest = parse_some(:stmtDeclare, "declare a text :=10;")
-        rest.should == ""
-      # node.count{|e| e.assignment? }.should == 1
+        expect(rest).to eq("")
+      # expect(node.count{|e| e.assignment? }).to eq(1)
       end
 
       it "doesn't require a space after the := symbol" do
         node, rest = parse_some(:stmtDeclare, "declare a text :=10; begin")
-      # node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+      # expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "allows escaped strings" do
         node, rest = parse_some(:stmtDeclare, "declare a text :=E'\\001abc'; begin")
-      # node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+      # expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "allows escaped octal characters" do
         node, rest = parse_some(:stmtDeclare, "declare a text :=E'\\001abc'; begin")
-      # node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+      # expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
     end
 
     context "without declare" do
       it "doesn't require a space before the := symbol" do
         node, rest = parse_some(:statement, "a:= 10; begin")
-        node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+        expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "doesn't require a space after the := symbol" do
         node = parse(:statement, "a :=10;")
-        node.should be_statement
-        node.count{|e| e.assignment? }.should == 1
+        expect(node).to be_statement
+        expect(node.count{|e| e.assignment? }).to eq(1)
       end
 
       it "doesn't require a space after the := symbol" do
         node, rest = parse_some(:statement, "a :=10; begin")
-        node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+        expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "allows escaped strings" do
         node, rest = parse_some(:statement, "a :=E'\\001abc'; begin")
-        node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+        expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
 
       it "allows escaped octal characters" do
         node, rest = parse_some(:statement, "a :=E'\\001abc'; begin")
-        node.count{|e| e.assignment? }.should == 1
-        rest.should == "begin"
+        expect(node.count{|e| e.assignment? }).to eq(1)
+        expect(rest).to eq("begin")
       end
     end
 

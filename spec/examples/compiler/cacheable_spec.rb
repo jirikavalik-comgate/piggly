@@ -6,19 +6,19 @@ module Piggly
   describe Util::Cacheable do
     before do
       @compiler = Class.new { include Piggly::Util::Cacheable }
-      @compiler.stub(:name).and_return('TestCompiler')
+      allow(@compiler).to receive(:name).and_return('TestCompiler')
     end
 
     describe "stale?" do
       it "compares cache_path with source path and cache_sources" do
-        @compiler.stub(:cache_sources).
+        allow(@compiler).to receive(:cache_sources).
           and_return(%w(parser.rb grammar.tt nodes.rb))
 
-        @compiler.should_receive(:cache_path).
+        expect(@compiler).to receive(:cache_path).
           with('source.sql').
           and_return('source.cache')
 
-        Util::File.should_receive(:stale?).
+        expect(Util::File).to receive(:stale?).
           with('source.cache', 'source.sql', 'parser.rb', 'grammar.tt', 'nodes.rb')
 
         @compiler.stale?('source.sql')
@@ -27,99 +27,99 @@ module Piggly
 
     describe "cache" do
       before do
-        @procedure = mock('procedure')
-        @procedure.stub(:source_path).and_return('source path')
-        @procedure.stub(:source).and_return('SOURCE CODE')
-        @procedure.stub(:name).and_return('f')
+        @procedure = double('procedure')
+        allow(@procedure).to receive(:source_path).and_return('source path')
+        allow(@procedure).to receive(:source).and_return('SOURCE CODE')
+        allow(@procedure).to receive(:name).and_return('f')
       end
 
       context "when cache is stale" do
         before do
-          @compiler.should_receive(:stale?).
+          expect(@compiler).to receive(:stale?).
             and_return(true)
 
-          File.should_receive(:read).
+          expect(File).to receive(:read).
             with(@procedure.source_path).
             and_return(@procedure.source)
         end
 
         it "parses the procedure source" do
-          @compiler.stub(:compile).
-            and_return(mock('result').as_null_object)
-          Compiler::Cacheable::CacheDirectory.stub(:lookup).
-            and_return(mock('cache').as_null_object)
+          allow(@compiler).to receive(:compile).
+            and_return(double('result').as_null_object)
+          allow(Compiler::Cacheable::CacheDirectory).to receive(:lookup).
+            and_return(double('cache').as_null_object)
 
-          Parser.should_receive(:parse).
+          expect(Parser).to receive(:parse).
             with(@procedure.source)
 
           @compiler.cache(@procedure)
         end
 
         it "passes the parse tree and transient arguments to the compiler" do
-          tree  = mock('parse tree').as_null_object
+          tree  = double('parse tree').as_null_object
           args  = %w(a b c)
           block = lambda{|a,b| b }
 
-          Parser.stub(:parse).and_return(tree)
-          Compiler::Cacheable::CacheDirectory.stub(:lookup).
-            and_return(mock('cache').as_null_object)
+          allow(Parser).to receive(:parse).and_return(tree)
+          allow(Compiler::Cacheable::CacheDirectory).to receive(:lookup).
+            and_return(double('cache').as_null_object)
 
           # calling cache method below should pass the parse tree plus any
           # arguments given to cache along to the abstract 'compile' method
-          @compiler.should_receive(:compile).
+          expect(@compiler).to receive(:compile).
             with(tree, *args.push(block)).
-            and_return(mock('result').as_null_object)
+            and_return(double('result').as_null_object)
 
           @compiler.cache(@procedure, *args, &block)
         end
 
         it "updates the cache with the results from the compiler" do
-          cache  = mock('cache')
-          result = mock('result')
+          cache  = double('cache')
+          result = double('result')
 
-          Parser.stub(:parse).
-            and_return(mock('parse tree').as_null_object)
-          @compiler.should_receive(:compile).
+          allow(Parser).to receive(:parse).
+            and_return(double('parse tree').as_null_object)
+          expect(@compiler).to receive(:compile).
             # with parse tree
             and_return(result)
 
-          Compiler::Cacheable::CacheDirectory.should_receive(:lookup).
+          expect(Compiler::Cacheable::CacheDirectory).to receive(:lookup).
             and_return(cache)
-          cache.should_receive(:replace).
+          expect(cache).to receive(:replace).
             with(result)
 
           @compiler.cache(@procedure)
         end
 
         it "returns the cache object" do
-          Parser.stub(:parse).
-            and_return(mock('parse tree').as_null_object)
-          @compiler.should_receive(:compile).
-            and_return(mock('result'))
+          allow(Parser).to receive(:parse).
+            and_return(double('parse tree').as_null_object)
+          expect(@compiler).to receive(:compile).
+            and_return(double('result'))
 
-          cache = mock('cache')
-          cache.stub(:replace)
+          cache = double('cache')
+          allow(cache).to receive(:replace)
 
-          Compiler::Cacheable::CacheDirectory.should_receive(:lookup).
+          expect(Compiler::Cacheable::CacheDirectory).to receive(:lookup).
             and_return(cache)
           
-          @compiler.cache(@procedure).should == cache
+          expect(@compiler.cache(@procedure)).to eq(cache)
         end
       end
 
       context "when cache is fresh" do
         before do
-          @compiler.should_receive(:stale?).
+          expect(@compiler).to receive(:stale?).
             and_return(false)
         end
 
         it "returns the cached results from disk" do
-          cache = mock('cache')
+          cache = double('cache')
           
-          Compiler::Cacheable::CacheDirectory.should_receive(:lookup).
+          expect(Compiler::Cacheable::CacheDirectory).to receive(:lookup).
             and_return(cache)
           
-          @compiler.cache(@procedure).should == cache
+          expect(@compiler.cache(@procedure)).to eq(cache)
         end
       end
     end
@@ -132,14 +132,14 @@ module Piggly
 
     describe "[]=" do
       it "stores the new entry" do
-        @cache.stub(:write)
+        allow(@cache).to receive(:write)
         @cache[:foo] = 'data'
-        @cache[:foo].should == 'data'
-        @cache['foo'].should == 'data'
+        expect(@cache[:foo]).to eq('data')
+        expect(@cache['foo']).to eq('data')
       end
 
       it "writes through to disk" do
-        @cache.should_receive(:write).
+        expect(@cache).to receive(:write).
           with('foo' => 'data')
         @cache['foo'] = 'data'
       end
@@ -147,12 +147,12 @@ module Piggly
 
     describe "update" do
       it "stores new entries" do
-        @cache.stub(:write)
+        allow(@cache).to receive(:write)
         @cache.update(:abc => 'abacus', :xyz => 'xylophone')
-        @cache[:abc].should == 'abacus'
-        @cache[:xyz].should == 'xylophone'
-        @cache['abc'].should == 'abacus'
-        @cache['xyz'].should == 'xylophone'
+        expect(@cache[:abc]).to eq('abacus')
+        expect(@cache[:xyz]).to eq('xylophone')
+        expect(@cache['abc']).to eq('abacus')
+        expect(@cache['xyz']).to eq('xylophone')
       end
 
       it "stores updated entries"

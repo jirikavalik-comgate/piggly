@@ -18,22 +18,22 @@ module Piggly
     end
 
     before do
-      Config.stub(:cache_root).and_return('/')
+      allow(Config).to receive(:cache_root).and_return('/')
     end
 
     it "installs class methods" do
-      ExampleClass.should respond_to(:cache_path)
+      expect(ExampleClass).to respond_to(:cache_path)
     end
     
     it "uses class name as cache subdirectory" do
-      FileUtils.should_receive(:makedirs).at_least(:once)
+      expect(FileUtils).to receive(:makedirs).at_least(:once)
 
-      ExampleClass.cache_path('a.ext').should           =~ %r(/Example/a.ext$)
-      ExampleCacheClass.cache_path('a.ext').should      =~ %r(/ExampleCache/a.ext$)
-      PigglyExampleClassHTML.cache_path('a.ext').should =~ %r(/PigglyExampleClassHTML/a.ext$)
-      PigglyExampleHTMLClass.cache_path('a.ext').should =~ %r(/PigglyExampleHTML/a.ext$)
-      HTMLPiggly.cache_path('a.ext').should             =~ %r(/HTML/a.ext$)
-      ExampleRedefined.cache_path('a.ext').should       == 'redefined'
+      expect(ExampleClass.cache_path('a.ext')).to match(%r(/Example/a.ext$))
+      expect(ExampleCacheClass.cache_path('a.ext')).to match(%r(/ExampleCache/a.ext$))
+      expect(PigglyExampleClassHTML.cache_path('a.ext')).to match(%r(/PigglyExampleClassHTML/a.ext$))
+      expect(PigglyExampleHTMLClass.cache_path('a.ext')).to match(%r(/PigglyExampleHTML/a.ext$))
+      expect(HTMLPiggly.cache_path('a.ext')).to match(%r(/HTML/a.ext$))
+      expect(ExampleRedefined.cache_path('a.ext')).to eq('redefined')
     end
   end
 =end

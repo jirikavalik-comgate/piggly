@@ -18,8 +18,8 @@ module Piggly
         SQL
 
         node = parse(:start, body)
-        node.count{|e| e.for? }.should == 1
-        node.count{|e| e.comment? }.should == 1
+        expect(node.count{|e| e.for? }).to eq(1)
+        expect(node.count{|e| e.comment? }).to eq(1)
       end
   end
 end

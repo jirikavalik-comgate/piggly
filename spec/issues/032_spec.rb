@@ -27,7 +27,7 @@ module Piggly
       let(:args) { %w(-s public.c) }
 
       it "selects matching procs" do
-        result(args).should == ["public.c"]
+        expect(result(args)).to eq(["public.c"])
       end
     end
 
@@ -35,10 +35,10 @@ module Piggly
       let(:args) { %w(-s /public.[bcd]/) }
 
       it "selects matching procs" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.b",
           "public.c",
-          "public.d"]
+          "public.d"])
       end
     end
 
@@ -46,9 +46,9 @@ module Piggly
       let(:args) { %w(-s public.b -s public.d) }
 
       it "adds matching procs" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.b",
-          "public.d"]
+          "public.d"])
       end
     end
 
@@ -56,10 +56,10 @@ module Piggly
       let(:args) { %w(-r public.c) }
 
       it "rejects matching procs" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.a",
           "public.b",
-          "public.d"]
+          "public.d"])
       end
     end
 
@@ -67,9 +67,9 @@ module Piggly
       let(:args) { %w(-r public.b -r public.d) }
 
       it "subtracts rejected procs" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.a",
-          "public.c"]
+          "public.c"])
       end
     end
 
@@ -77,9 +77,9 @@ module Piggly
       let(:args) { %w(-s /\.[abc]/ -r public.b -r public.d) }
 
       it "-r removes from -s matches" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.a",
-          "public.c"]
+          "public.c"])
       end
     end
 
@@ -87,10 +87,10 @@ module Piggly
       let(:args) { %w(-r /\.[bc]/ -s public.b -s public.a) }
 
       it "-s adds to -r non-matches" do
-        result(args).should == [
+        expect(result(args)).to eq([
           "public.a",
           "public.b",
-          "public.d"]
+          "public.d"])
       end
     end
 

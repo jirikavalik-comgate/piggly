@@ -6,7 +6,7 @@ describe Installer do
 
   before do
     @config     = Config.new
-    @connection = mock('connection')
+    @connection = double('connection')
     @installer  = Installer.new(@config, @connection)
   end
 
@@ -15,21 +15,21 @@ describe Installer do
       untraced  = 'create or replace function x(char)'
       traced    = 'create or replace function f(int)'
 
-      result   = {:tags => stub, :code => traced}
-      profile  = mock('profile')
+      result   = {:tags => double('tags'), :code => traced}
+      profile  = double('profile')
 
-      compiler = mock('compiler', :compile => result)
-      Compiler::TraceCompiler.should_receive(:new).
+      compiler = double('compiler', :compile => result)
+      expect(Compiler::TraceCompiler).to receive(:new).
         and_return(compiler)
 
-      procedure = mock('procedure', :oid => 'oid', :source => untraced)
-      procedure.should_receive(:definition).
+      procedure = double('procedure', :oid => 'oid', :source => untraced)
+      expect(procedure).to receive(:definition).
         with(traced).and_return(traced)
 
-      @connection.should_receive(:exec).
+      expect(@connection).to receive(:exec).
         with(traced)
 
-      profile.should_receive(:add).
+      expect(profile).to receive(:add).
         with(procedure, result[:tags], result)
 
       @installer.trace(procedure, profile)
@@ -39,12 +39,12 @@ describe Installer do
   describe "untrace" do
     it "executes the original definition" do
       untraced  = 'create or replace function x(char)'
-      procedure = stub(:oid => 'oid', :source => untraced)
+      procedure = double('procedure', :oid => 'oid', :source => untraced)
 
-      procedure.should_receive(:definition).
+      expect(procedure).to receive(:definition).
         and_return(untraced)
 
-      @connection.should_receive(:exec).
+      expect(@connection).to receive(:exec).
         with(untraced)
 
       @installer.untrace(procedure)

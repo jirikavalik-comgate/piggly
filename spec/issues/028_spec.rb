@@ -8,7 +8,7 @@ module Piggly
       body = 'GET STACKED DIAGNOSTICS text_var1 = MESSAGE_TEXT, text_var2 = PG_EXCEPTION_DETAIL, text_var3 = PG_EXCEPTION_HINT;'
 
       node = parse(:statement, body)
-      node.should be_statement
+      expect(node).to be_statement
     end
 
     it "can parse a procedure with GET STACKED DIAGNOSTICS" do
@@ -27,8 +27,8 @@ module Piggly
       SQL
 
       node = parse(:start, body.strip)
-      node.count{|e| e.branch? }.should == 1 # catch
-      node.find{|e| e.branch? }.body.source_text.strip.should =~ /^GET.+HINT;/m
+      expect(node.count{|e| e.branch? }).to eq(1) # catch
+      expect(node.find{|e| e.branch? }.body.source_text.strip).to match(/^GET.+HINT;/m)
     end
 
     it "can parse WITH <> AS <> SELECT <> SQL query" do
@@ -42,7 +42,7 @@ module Piggly
       SQL
 
       node = parse(:start, body.strip.downcase)
-      node.count{|e| e.sql? }.should == 1
+      expect(node.count{|e| e.sql? }).to eq(1)
     end
   end
 end

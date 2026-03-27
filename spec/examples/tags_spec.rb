@@ -27,7 +27,7 @@ describe Tags::UnconditionalLoopTag do
     # - pass through
     # - iterate only once
     # - iterate more than once
-    @tag.state.should == 0b0000
+    expect(@tag.state).to eq(0b0000)
   end
 
   it "detects state 01 (0b0001)" do
@@ -41,7 +41,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0001
+    expect(@tag.state).to eq(0b0001)
   end
 
   it "detects state 02 (0b0010)" do
@@ -54,7 +54,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0010
+    expect(@tag.state).to eq(0b0010)
   end
 
   it "detects state 03 (0b0011)" do
@@ -72,7 +72,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0011
+    expect(@tag.state).to eq(0b0011)
   end
 
   it "detects state 04 (0b0100)" do
@@ -84,7 +84,7 @@ describe Tags::UnconditionalLoopTag do
     # zero iterations
     @tag.ping('f')
 
-    @tag.state.should == 0b0100
+    expect(@tag.state).to eq(0b0100)
   end
 
   it "detects state 05 (0b0101)" do
@@ -101,7 +101,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0101
+    expect(@tag.state).to eq(0b0101)
   end
 
   it "detects state 06 (0b0110)" do
@@ -117,7 +117,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0110
+    expect(@tag.state).to eq(0b0110)
   end
 
   it "detects state 07 (0b0111)" do
@@ -138,7 +138,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('t')
     @tag.ping('f')
 
-    @tag.state.should == 0b0111
+    expect(@tag.state).to eq(0b0111)
   end
 
   it "detects state 08 (0b1000)" do
@@ -150,7 +150,7 @@ describe Tags::UnconditionalLoopTag do
     # TODO invalid
     @tag.ping('@')
 
-    @tag.state.should == 0b1000
+    expect(@tag.state).to eq(0b1000)
   end
 
   it "detects state 09 (0b1001)" do
@@ -166,7 +166,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1001
+    expect(@tag.state).to eq(0b1001)
   end
 
   it "detects state 10 (0b1010)" do
@@ -180,7 +180,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1010
+    expect(@tag.state).to eq(0b1010)
   end
 
   it "detects state 11 (0b1011)" do
@@ -201,7 +201,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1011
+    expect(@tag.state).to eq(0b1011)
   end
 
   it "detects state 12 (0b1100)" do
@@ -214,7 +214,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1100
+    expect(@tag.state).to eq(0b1100)
   end
 
   it "detects state 13 (0b1101)" do
@@ -233,7 +233,7 @@ describe Tags::UnconditionalLoopTag do
     # pass through
     @tag.ping('f')
 
-    @tag.state.should == 0b1101
+    expect(@tag.state).to eq(0b1101)
   end
 
   it "detects state 14 (0b1110)" do
@@ -250,7 +250,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1110
+    expect(@tag.state).to eq(0b1110)
   end
 
   it "detects state 15 (0b1111)" do
@@ -274,7 +274,7 @@ describe Tags::UnconditionalLoopTag do
     @tag.ping('@')
     @tag.ping('f')
 
-    @tag.state.should == 0b1111
+    expect(@tag.state).to eq(0b1111)
   end
 
 end

@@ -8,48 +8,48 @@ module Piggly
       describe "raise" do
         it "parses successfully" do
           node, rest = parse_some(:statement, "RAISE EXCEPTION 'message';")
-          node.should be_statement
-          rest.should == ''
+          expect(node).to be_statement
+          expect(rest).to eq('')
         end
 
         it "handles exception" do
           node = parse(:statement, "RAISE EXCEPTION 'message';")
-          node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 1
-          node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 0
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(1)
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(0)
         end
 
         it "handles events" do
           %w(WARNING LOG INFO NOTICE DEBUG).each do |event|
             node = parse(:statement, "RAISE #{event} 'message';")
-            node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 0
-            node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 1
+            expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(0)
+            expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(1)
           end
         end
 
         it "doesn't require a message" do
           node = parse(:statement, "RAISE EXCEPTION;")
-          node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 1
-          node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 0
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(1)
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(0)
         end
 
         it "doesn't require a message" do
           %w(WARNING LOG INFO NOTICE DEBUG).each do |event|
             node = parse(:statement, "RAISE #{event};")
-            node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 0
-            node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 1
+            expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(0)
+            expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(1)
           end
         end
 
         it "has default level of EXCEPTION" do
           node = parse(:statement, "RAISE 'message';")
-          node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 1
-          node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 0
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(1)
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(0)
         end
 
         it "doesn't require a level or message" do
           node = parse(:statement, "RAISE;")
-          node.count{|e| e.is_a?(Parser::Nodes::Throw) }.should == 1
-          node.count{|e| e.is_a?(Parser::Nodes::Raise) }.should == 0
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Throw) }).to eq(1)
+          expect(node.count{|e| e.is_a?(Parser::Nodes::Raise) }).to eq(0)
         end
       end
 
@@ -60,17 +60,17 @@ module Piggly
 
         it "parses successfully" do
           node, rest = parse_some(:statement, @text)
-          node.should be_statement
-          rest.should == ''
+          expect(node).to be_statement
+          expect(rest).to eq('')
         end
 
         it "has Catch node" do
           node = parse(:statement, @text)
           catches = node.select{|e| e.is_a?(Parser::Nodes::Catch) }
-          catches.size.should == 2
+          expect(catches.size).to eq(2)
 
-          catches[0].count{|e| e.named?(:cond) and e.expression? }.should == 1
-          catches[1].count{|e| e.named?(:cond) and e.expression? }.should == 1
+          expect(catches[0].count{|e| e.named?(:cond) and e.expression? }).to eq(1)
+          expect(catches[1].count{|e| e.named?(:cond) and e.expression? }).to eq(1)
         end
       end
     end

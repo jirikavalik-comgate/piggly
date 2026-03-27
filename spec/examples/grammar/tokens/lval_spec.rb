@@ -6,43 +6,43 @@ module Piggly
 
     describe "l-values" do
       it "can be a simple identifier" do
-        parse(:lValue, 'id').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'id')).to be_a(Parser::Nodes::Assignable)
       end
 
       it "can be an attribute accessor" do
-        parse(:lValue, 'record.id').should be_a(Parser::Nodes::Assignable)
-        parse(:lValue, 'public.dataset.id').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'record.id')).to be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'public.dataset.id')).to be_a(Parser::Nodes::Assignable)
       end
 
       it "can use quoted attributes" do
-        parse(:lValue, 'record."ID"').should be_a(Parser::Nodes::Assignable)
-        parse(:lValue, '"schema name"."table name"."column name"').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'record."ID"')).to be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, '"schema name"."table name"."column name"')).to be_a(Parser::Nodes::Assignable)
       end
       
       it "can be an array accessor" do
-        parse(:lValue, 'names[0]').should be_a(Parser::Nodes::Assignable)
-        parse(:lValue, 'names[1000]').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'names[0]')).to be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'names[1000]')).to be_a(Parser::Nodes::Assignable)
       end
 
       it "can contain comments in array accessors" do
         node = parse(:lValue, 'names[3 /* comment */]')
-        node.should be_a(Parser::Nodes::Assignable)
-        node.count{|e| e.comment? }.should == 1
+        expect(node).to be_a(Parser::Nodes::Assignable)
+        expect(node.count{|e| e.comment? }).to eq(1)
         
         node = parse(:lValue, "names[9 -- comment \n]")
-        node.should be_a(Parser::Nodes::Assignable)
-        node.count{|e| e.comment? }.should == 1
+        expect(node).to be_a(Parser::Nodes::Assignable)
+        expect(node.count{|e| e.comment? }).to eq(1)
       end
 
       it "can be an array accessed by another l-value" do
-        parse(:lValue, 'names[face.id]').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'names[face.id]')).to be_a(Parser::Nodes::Assignable)
       end
 
       it "can be a nested array access"
         # names[faces[0].id].id doesn't work because it requires context-sensitivity [faces[0]
       
       it "can be a multi-dimensional array access" do
-        parse(:lValue, 'data[10][2][0]').should be_a(Parser::Nodes::Assignable)
+        expect(parse(:lValue, 'data[10][2][0]')).to be_a(Parser::Nodes::Assignable)
       end
     end
 

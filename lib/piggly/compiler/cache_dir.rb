@@ -25,7 +25,7 @@ module Piggly
         @dir  = dir
         @data = Hash.new do |h, k|
           path = File.join(@dir, k.to_s)
-          if File.exists?(path)
+          if File.exist?(path)
             h[k.to_s] = File.open(path, "rb") do |io|
               # Detect Marshal'd data
               if io.read(2) !~ HINT
@@ -63,7 +63,7 @@ module Piggly
       # @return [void]
       def delete(key)
         path = File.join(@dir, key.to_s)
-        File.unlink(path) if File.exists?(path)
+        File.unlink(path) if File.exist?(path)
         @data.delete(key)
       end
 
@@ -77,7 +77,7 @@ module Piggly
       def clear
         @data.clear
 
-        if File.exists?(@dir)
+        if File.exist?(@dir)
           FileUtils.rm(Dir["#{@dir}/*"])
           FileUtils.touch(@dir)
         else
@@ -99,7 +99,7 @@ module Piggly
       # Serializes each entry to disk
       #   @return [void]
       def write(hash)
-        FileUtils.mkdir(@dir) unless File.exists?(@dir)
+        FileUtils.mkdir(@dir) unless File.exist?(@dir)
         FileUtils.touch(@dir) # Update mtime
 
         hash.each do |key, value|
