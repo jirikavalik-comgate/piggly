@@ -1,10 +1,10 @@
 source "http://rubygems.org"
 
-gem "pg"
+gem "pg",           "~> 1.4.0"  # pg 1.5+ requires Ruby >= 3.0
 gem "treetop",      "~> 1.4.14"
 
 group :test, :development do
-  gem "rake",                     :require => false
+  gem "rake", "~> 10.5",              :require => false
 end
 
 group :test do
