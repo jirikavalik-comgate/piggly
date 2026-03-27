@@ -28,7 +28,7 @@ module Piggly
         end
       end
 
-      # @return [PGconn]
+      # @return [PG::Connection]
       def connect(config)
         require "pg"
         require "erb"
@@ -45,17 +45,21 @@ module Piggly
         specs =
           if File.extname(path) == ".json"
             require "json"
-            JSON.load(ERB.new(IO.read(path)).result)
+            JSON.parse(ERB.new(IO.read(path)).result)
           else
             require "yaml"
-            YAML.load(ERB.new(IO.read(path)).result)
+            YAML.safe_load(ERB.new(IO.read(path)).result)
           end
 
         spec = (specs.is_a?(Hash) and specs[config.connection_name]) or
           raise "Database '#{config.connection_name}' is not configured in #{path}"
 
-        PGconn.connect(spec["host"], spec["port"], nil, nil,
-          spec["database"], spec["username"], spec["password"])
+        PG::Connection.new(
+          host:     spec["host"],
+          port:     spec["port"],
+          dbname:   spec["database"],
+          user:     spec["username"],
+          password: spec["password"])
       end
 
       # @return [Enumerable<SkeletonProcedure>]

@@ -39,6 +39,7 @@ these events and generates prettified source code that is annotated with coverag
 
 ## Requirements
 
+* Ruby >= 3.3
 * [Treetop](http://github.com/nathansobo/treetop): `gem install treetop`
 * The [ruby-pg driver](http://bitbucket.org/ged/ruby-pg/): `gem install pg`
 * The examples require ActiveRecord: `gem install activerecord`

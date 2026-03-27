@@ -1,6 +1,6 @@
 # encoding: ASCII-8BIT
 
-grammar Piggly
+grammar PigglyParser
 
   rule start
     tSpace?

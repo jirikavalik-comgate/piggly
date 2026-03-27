@@ -3,7 +3,7 @@
 
 
 
-module Piggly
+module PigglyParser
   include Treetop::Runtime
 
   def root
@@ -22,7 +22,7 @@ module Piggly
     if node_cache[:start].has_key?(index)
       cached = node_cache[:start][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:start][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -40,11 +40,11 @@ module Piggly
       r3 = _nt_block
       s0 << r3
       if r3
-        if has_terminal?(';', false, index)
-          r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(';', false, index))
+          r5 = true
+          @index += match_len
         else
-          terminal_parse_failure(';')
+          terminal_parse_failure('\';\'')
           r5 = nil
         end
         if r5
@@ -154,7 +154,7 @@ module Piggly
     if node_cache[:block].has_key?(index)
       cached = node_cache[:block][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:block][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -258,6 +258,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i20, s20 = index, []
@@ -327,6 +328,7 @@ module Piggly
         r20 = nil
       end
       if r20
+        r20 = SyntaxNode.new(input, (index-1)...index) if r20 == true
         r0 = r20
       else
         @index = i0
@@ -361,7 +363,7 @@ module Piggly
     if node_cache[:statement].has_key?(index)
       cached = node_cache[:statement][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:statement][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -373,11 +375,11 @@ module Piggly
     r3 = _nt_block
     s2 << r3
     if r3
-      if has_terminal?(';', false, index)
-        r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-        @index += 1
+      if (match_len = has_terminal?(';', false, index))
+        r4 = true
+        @index += match_len
       else
-        terminal_parse_failure(';')
+        terminal_parse_failure('\';\'')
         r4 = nil
       end
       s2 << r4
@@ -390,62 +392,77 @@ module Piggly
       r2 = nil
     end
     if r2
+      r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
       r1 = r2
     else
       r5 = _nt_stmtAssignment
       if r5
+        r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
         r1 = r5
       else
         r6 = _nt_stmtIf
         if r6
+          r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
           r1 = r6
         else
           r7 = _nt_stmtCase
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r1 = r7
           else
             r8 = _nt_stmtLoop
             if r8
+              r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
               r1 = r8
             else
               r9 = _nt_stmtWhileLoop
               if r9
+                r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
                 r1 = r9
               else
                 r10 = _nt_stmtForLoop
                 if r10
+                  r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                   r1 = r10
                 else
                   r11 = _nt_stmtForEachLoop
                   if r11
+                    r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                     r1 = r11
                   else
                     r12 = _nt_stmtExit
                     if r12
+                      r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                       r1 = r12
                     else
                       r13 = _nt_stmtContinue
                       if r13
+                        r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                         r1 = r13
                       else
                         r14 = _nt_stmtReturn
                         if r14
+                          r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
                           r1 = r14
                         else
                           r15 = _nt_stmtRaise
                           if r15
+                            r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                             r1 = r15
                           else
                             r16 = _nt_stmtExecSql
                             if r16
+                              r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                               r1 = r16
                             else
                               r17 = _nt_stmtNull
                               if r17
+                                r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                                 r1 = r17
                               else
                                 r18 = _nt_stmtGetDiag
                                 if r18
+                                  r18 = SyntaxNode.new(input, (index-1)...index) if r18 == true
                                   r1 = r18
                                 else
                                   @index = i1
@@ -508,7 +525,7 @@ module Piggly
     if node_cache[:stmtAssignment].has_key?(index)
       cached = node_cache[:stmtAssignment][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtAssignment][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -540,11 +557,11 @@ module Piggly
             r7 = _nt_expressionUntilSemiColon
             s0 << r7
             if r7
-              if has_terminal?(';', false, index)
-                r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(';', false, index))
+                r8 = true
+                @index += match_len
               else
-                terminal_parse_failure(';')
+                terminal_parse_failure('\';\'')
                 r8 = nil
               end
               s0 << r8
@@ -637,7 +654,7 @@ module Piggly
     if node_cache[:stmtCase].has_key?(index)
       cached = node_cache[:stmtCase][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtCase][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -693,11 +710,11 @@ module Piggly
                   end
                   s1 << r11
                   if r11
-                    if has_terminal?(';', false, index)
-                      r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?(';', false, index))
+                      r13 = true
+                      @index += match_len
                     else
-                      terminal_parse_failure(';')
+                      terminal_parse_failure('\';\'')
                       r13 = nil
                     end
                     s1 << r13
@@ -717,6 +734,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i14, s14 = index, []
@@ -771,11 +789,11 @@ module Piggly
                       end
                       s14 << r25
                       if r25
-                        if has_terminal?(';', false, index)
-                          r27 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                          @index += 1
+                        if (match_len = has_terminal?(';', false, index))
+                          r27 = true
+                          @index += match_len
                         else
-                          terminal_parse_failure(';')
+                          terminal_parse_failure('\';\'')
                           r27 = nil
                         end
                         s14 << r27
@@ -796,6 +814,7 @@ module Piggly
         r14 = nil
       end
       if r14
+        r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
         r0 = r14
       else
         @index = i0
@@ -864,7 +883,7 @@ module Piggly
     if node_cache[:stmtIf].has_key?(index)
       cached = node_cache[:stmtIf][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtIf][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -934,11 +953,11 @@ module Piggly
                             end
                             s0 << r16
                             if r16
-                              if has_terminal?(';', false, index)
-                                r18 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                @index += 1
+                              if (match_len = has_terminal?(';', false, index))
+                                r18 = true
+                                @index += match_len
                               else
-                                terminal_parse_failure(';')
+                                terminal_parse_failure('\';\'')
                                 r18 = nil
                               end
                               s0 << r18
@@ -1029,7 +1048,7 @@ module Piggly
     if node_cache[:stmtElse].has_key?(index)
       cached = node_cache[:stmtElse][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtElse][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -1098,6 +1117,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i14, s14 = index, []
@@ -1132,6 +1152,7 @@ module Piggly
         r14 = nil
       end
       if r14
+        r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
         r0 = r14
       else
         @index = i0
@@ -1243,7 +1264,7 @@ module Piggly
     if node_cache[:stmtLoop].has_key?(index)
       cached = node_cache[:stmtLoop][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtLoop][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -1319,11 +1340,11 @@ module Piggly
                           end
                           s1 << r17
                           if r17
-                            if has_terminal?(';', false, index)
-                              r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                              @index += 1
+                            if (match_len = has_terminal?(';', false, index))
+                              r19 = true
+                              @index += match_len
                             else
-                              terminal_parse_failure(';')
+                              terminal_parse_failure('\';\'')
                               r19 = nil
                             end
                             s1 << r19
@@ -1351,6 +1372,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i21, s21 = index, []
@@ -1395,11 +1417,11 @@ module Piggly
                       end
                       s21 << r31
                       if r31
-                        if has_terminal?(';', false, index)
-                          r33 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                          @index += 1
+                        if (match_len = has_terminal?(';', false, index))
+                          r33 = true
+                          @index += match_len
                         else
-                          terminal_parse_failure(';')
+                          terminal_parse_failure('\';\'')
                           r33 = nil
                         end
                         s21 << r33
@@ -1424,6 +1446,7 @@ module Piggly
         r21 = nil
       end
       if r21
+        r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
         r0 = r21
       else
         @index = i0
@@ -1553,7 +1576,7 @@ module Piggly
     if node_cache[:stmtWhileLoop].has_key?(index)
       cached = node_cache[:stmtWhileLoop][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtWhileLoop][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -1643,11 +1666,11 @@ module Piggly
                                 end
                                 s1 << r21
                                 if r21
-                                  if has_terminal?(';', false, index)
-                                    r23 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                    @index += 1
+                                  if (match_len = has_terminal?(';', false, index))
+                                    r23 = true
+                                    @index += match_len
                                   else
-                                    terminal_parse_failure(';')
+                                    terminal_parse_failure('\';\'')
                                     r23 = nil
                                   end
                                   s1 << r23
@@ -1674,6 +1697,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i24, s24 = index, []
@@ -1732,11 +1756,11 @@ module Piggly
                             end
                             s24 << r38
                             if r38
-                              if has_terminal?(';', false, index)
-                                r40 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                @index += 1
+                              if (match_len = has_terminal?(';', false, index))
+                                r40 = true
+                                @index += match_len
                               else
-                                terminal_parse_failure(';')
+                                terminal_parse_failure('\';\'')
                                 r40 = nil
                               end
                               s24 << r40
@@ -1760,6 +1784,7 @@ module Piggly
         r24 = nil
       end
       if r24
+        r24 = SyntaxNode.new(input, (index-1)...index) if r24 == true
         r0 = r24
       else
         @index = i0
@@ -1979,7 +2004,7 @@ module Piggly
     if node_cache[:stmtForEachLoop].has_key?(index)
       cached = node_cache[:stmtForEachLoop][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtForEachLoop][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -2111,11 +2136,11 @@ module Piggly
                                               end
                                               s1 << r32
                                               if r32
-                                                if has_terminal?(';', false, index)
-                                                  r34 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                                  @index += 1
+                                                if (match_len = has_terminal?(';', false, index))
+                                                  r34 = true
+                                                  @index += match_len
                                                 else
-                                                  terminal_parse_failure(';')
+                                                  terminal_parse_failure('\';\'')
                                                   r34 = nil
                                                 end
                                                 s1 << r34
@@ -2153,6 +2178,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i36, s36 = index, []
@@ -2253,11 +2279,11 @@ module Piggly
                                           end
                                           s36 << r61
                                           if r61
-                                            if has_terminal?(';', false, index)
-                                              r63 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                              @index += 1
+                                            if (match_len = has_terminal?(';', false, index))
+                                              r63 = true
+                                              @index += match_len
                                             else
-                                              terminal_parse_failure(';')
+                                              terminal_parse_failure('\';\'')
                                               r63 = nil
                                             end
                                             s36 << r63
@@ -2292,6 +2318,7 @@ module Piggly
         r36 = nil
       end
       if r36
+        r36 = SyntaxNode.new(input, (index-1)...index) if r36 == true
         r0 = r36
       else
         @index = i0
@@ -2459,7 +2486,7 @@ module Piggly
     if node_cache[:stmtForLoop].has_key?(index)
       cached = node_cache[:stmtForLoop][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtForLoop][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -2494,10 +2521,12 @@ module Piggly
                     i10 = index
                     r11 = _nt_stmtForSql
                     if r11
+                      r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                       r10 = r11
                     else
                       r12 = _nt_expressionUntilLoop
                       if r12
+                        r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                         r10 = r12
                       else
                         @index = i10
@@ -2568,11 +2597,11 @@ module Piggly
                                         end
                                         s1 << r26
                                         if r26
-                                          if has_terminal?(';', false, index)
-                                            r28 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                            @index += 1
+                                          if (match_len = has_terminal?(';', false, index))
+                                            r28 = true
+                                            @index += match_len
                                           else
-                                            terminal_parse_failure(';')
+                                            terminal_parse_failure('\';\'')
                                             r28 = nil
                                           end
                                           s1 << r28
@@ -2607,6 +2636,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i30, s30 = index, []
@@ -2631,10 +2661,12 @@ module Piggly
                   i37 = index
                   r38 = _nt_stmtForSql
                   if r38
+                    r38 = SyntaxNode.new(input, (index-1)...index) if r38 == true
                     r37 = r38
                   else
                     r39 = _nt_expressionUntilLoop
                     if r39
+                      r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                       r37 = r39
                     else
                       @index = i37
@@ -2684,11 +2716,11 @@ module Piggly
                                     end
                                     s30 << r49
                                     if r49
-                                      if has_terminal?(';', false, index)
-                                        r51 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                        @index += 1
+                                      if (match_len = has_terminal?(';', false, index))
+                                        r51 = true
+                                        @index += match_len
                                       else
-                                        terminal_parse_failure(';')
+                                        terminal_parse_failure('\';\'')
                                         r51 = nil
                                       end
                                       s30 << r51
@@ -2720,6 +2752,7 @@ module Piggly
         r30 = nil
       end
       if r30
+        r30 = SyntaxNode.new(input, (index-1)...index) if r30 == true
         r0 = r30
       else
         @index = i0
@@ -2751,7 +2784,7 @@ module Piggly
     if node_cache[:stmtForSql].has_key?(index)
       cached = node_cache[:stmtForSql][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtForSql][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -2858,7 +2891,7 @@ module Piggly
     if node_cache[:stmtExit].has_key?(index)
       cached = node_cache[:stmtExit][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtExit][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -2911,11 +2944,11 @@ module Piggly
         end
         s1 << r9
         if r9
-          if has_terminal?(';', false, index)
-            r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r11 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r11 = nil
           end
           s1 << r11
@@ -2930,6 +2963,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i12, s12 = index, []
@@ -2982,11 +3016,11 @@ module Piggly
                 r23 = _nt_expressionUntilSemiColon
                 s12 << r23
                 if r23
-                  if has_terminal?(';', false, index)
-                    r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(';', false, index))
+                    r24 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure(';')
+                    terminal_parse_failure('\';\'')
                     r24 = nil
                   end
                   s12 << r24
@@ -3004,6 +3038,7 @@ module Piggly
         r12 = nil
       end
       if r12
+        r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
         r0 = r12
       else
         @index = i0
@@ -3093,7 +3128,7 @@ module Piggly
     if node_cache[:stmtContinue].has_key?(index)
       cached = node_cache[:stmtContinue][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtContinue][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3146,11 +3181,11 @@ module Piggly
         end
         s1 << r9
         if r9
-          if has_terminal?(';', false, index)
-            r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r11 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r11 = nil
           end
           s1 << r11
@@ -3165,6 +3200,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i12, s12 = index, []
@@ -3217,11 +3253,11 @@ module Piggly
                 r23 = _nt_expressionUntilSemiColon
                 s12 << r23
                 if r23
-                  if has_terminal?(';', false, index)
-                    r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(';', false, index))
+                    r24 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure(';')
+                    terminal_parse_failure('\';\'')
                     r24 = nil
                   end
                   s12 << r24
@@ -3239,6 +3275,7 @@ module Piggly
         r12 = nil
       end
       if r12
+        r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
         r0 = r12
       else
         @index = i0
@@ -3314,7 +3351,7 @@ module Piggly
     if node_cache[:stmtReturn].has_key?(index)
       cached = node_cache[:stmtReturn][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtReturn][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3339,17 +3376,18 @@ module Piggly
         s5 << r6
         if r6
           i8 = index
-          if has_terminal?(';', false, index)
-            r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r9 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r9 = nil
           end
           if r9
             @index = i8
             r8 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i8
             r8 = nil
           end
           s5 << r8
@@ -3362,6 +3400,7 @@ module Piggly
           r5 = nil
         end
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           i10, s10 = index, []
@@ -3396,6 +3435,7 @@ module Piggly
             r10 = nil
           end
           if r10
+            r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
             r4 = r10
           else
             i17, s17 = index, []
@@ -3421,10 +3461,12 @@ module Piggly
               r17 = nil
             end
             if r17
+              r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
               r4 = r17
             else
               r22 = _nt_expressionUntilSemiColon
               if r22
+                r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                 r4 = r22
               else
                 @index = i4
@@ -3444,11 +3486,11 @@ module Piggly
       end
       s0 << r2
       if r2
-        if has_terminal?(';', false, index)
-          r23 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(';', false, index))
+          r23 = true
+          @index += match_len
         else
-          terminal_parse_failure(';')
+          terminal_parse_failure('\';\'')
           r23 = nil
         end
         s0 << r23
@@ -3529,7 +3571,7 @@ module Piggly
     if node_cache[:stmtRaise].has_key?(index)
       cached = node_cache[:stmtRaise][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtRaise][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3546,22 +3588,27 @@ module Piggly
         i4 = index
         r5 = _nt_kwWARNING
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_kwNOTICE
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             r7 = _nt_kwINFO
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               r8 = _nt_kwLOG
               if r8
+                r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
                 r4 = r8
               else
                 r9 = _nt_kwDEBUG
                 if r9
+                  r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
                   r4 = r9
                 else
                   @index = i4
@@ -3594,11 +3641,11 @@ module Piggly
           end
           s1 << r10
           if r10
-            if has_terminal?(';', false, index)
-              r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(';', false, index))
+              r14 = true
+              @index += match_len
             else
-              terminal_parse_failure(';')
+              terminal_parse_failure('\';\'')
               r14 = nil
             end
             s1 << r14
@@ -3614,6 +3661,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i15, s15 = index, []
@@ -3667,11 +3715,11 @@ module Piggly
         end
         s15 << r17
         if r17
-          if has_terminal?(';', false, index)
-            r26 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r26 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r26 = nil
           end
           s15 << r26
@@ -3685,6 +3733,7 @@ module Piggly
         r15 = nil
       end
       if r15
+        r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
         r0 = r15
       else
         @index = i0
@@ -3713,7 +3762,7 @@ module Piggly
     if node_cache[:stmtExecSql].has_key?(index)
       cached = node_cache[:stmtExecSql][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtExecSql][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3734,11 +3783,11 @@ module Piggly
         r4 = _nt_expressionUntilSemiColon
         s0 << r4
         if r4
-          if has_terminal?(';', false, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r5 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r5 = nil
           end
           s0 << r5
@@ -3792,7 +3841,7 @@ module Piggly
     if node_cache[:stmtGetDiag].has_key?(index)
       cached = node_cache[:stmtGetDiag][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtGetDiag][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3809,10 +3858,12 @@ module Piggly
         i5 = index
         r6 = _nt_kwSTACKED
         if r6
+          r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
           r5 = r6
         else
           r7 = _nt_kwCURRENT
           if r7
+            r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
             r5 = r7
           else
             @index = i5
@@ -3847,11 +3898,11 @@ module Piggly
               r11 = _nt_expressionUntilSemiColon
               s0 << r11
               if r11
-                if has_terminal?(';', false, index)
-                  r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?(';', false, index))
+                  r12 = true
+                  @index += match_len
                 else
-                  terminal_parse_failure(';')
+                  terminal_parse_failure('\';\'')
                   r12 = nil
                 end
                 s0 << r12
@@ -3886,7 +3937,7 @@ module Piggly
     if node_cache[:stmtNull].has_key?(index)
       cached = node_cache[:stmtNull][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtNull][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3904,11 +3955,11 @@ module Piggly
       end
       s0 << r2
       if r2
-        if has_terminal?(';', false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(';', false, index))
+          r4 = true
+          @index += match_len
         else
-          terminal_parse_failure(';')
+          terminal_parse_failure('\';\'')
           r4 = nil
         end
         s0 << r4
@@ -3943,7 +3994,7 @@ module Piggly
     if node_cache[:stmtDeclare].has_key?(index)
       cached = node_cache[:stmtDeclare][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stmtDeclare][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3987,7 +4038,7 @@ module Piggly
     if node_cache[:varDeclaration].has_key?(index)
       cached = node_cache[:varDeclaration][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:varDeclaration][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -3996,10 +4047,12 @@ module Piggly
     i0 = index
     r1 = _nt_varDeclarationMisc
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       r2 = _nt_varDeclarationCursor
       if r2
+        r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
         r0 = r2
       else
         @index = i0
@@ -4080,7 +4133,7 @@ module Piggly
     if node_cache[:varDeclarationMisc].has_key?(index)
       cached = node_cache[:varDeclarationMisc][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:varDeclarationMisc][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4183,10 +4236,12 @@ module Piggly
                   i23 = index
                   r24 = _nt_kwASSIGN
                   if r24
+                    r24 = SyntaxNode.new(input, (index-1)...index) if r24 == true
                     r23 = r24
                   else
                     r25 = _nt_kwDEFAULT
                     if r25
+                      r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                       r23 = r25
                     else
                       @index = i23
@@ -4230,11 +4285,11 @@ module Piggly
                   end
                   s0 << r29
                   if r29
-                    if has_terminal?(';', false, index)
-                      r31 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                      @index += 1
+                    if (match_len = has_terminal?(';', false, index))
+                      r31 = true
+                      @index += match_len
                     else
-                      terminal_parse_failure(';')
+                      terminal_parse_failure('\';\'')
                       r31 = nil
                     end
                     s0 << r31
@@ -4316,7 +4371,7 @@ module Piggly
     if node_cache[:varDeclarationCursor].has_key?(index)
       cached = node_cache[:varDeclarationCursor][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:varDeclarationCursor][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4389,11 +4444,11 @@ module Piggly
                 end
                 s0 << r14
                 if r14
-                  if has_terminal?(';', false, index)
-                    r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?(';', false, index))
+                    r16 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure(';')
+                    terminal_parse_failure('\';\'')
                     r16 = nil
                   end
                   s0 << r16
@@ -4444,7 +4499,7 @@ module Piggly
     if node_cache[:identifierList].has_key?(index)
       cached = node_cache[:identifierList][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:identifierList][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4465,11 +4520,11 @@ module Piggly
         end
         s3 << r4
         if r4
-          if has_terminal?(',', false, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(',', false, index))
+            r6 = true
+            @index += match_len
           else
-            terminal_parse_failure(',')
+            terminal_parse_failure('\',\'')
             r6 = nil
           end
           s3 << r6
@@ -4535,7 +4590,7 @@ module Piggly
     if node_cache[:blockExceptions].has_key?(index)
       cached = node_cache[:blockExceptions][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:blockExceptions][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4609,7 +4664,7 @@ module Piggly
     if node_cache[:exceptionCase].has_key?(index)
       cached = node_cache[:exceptionCase][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:exceptionCase][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4699,7 +4754,7 @@ module Piggly
     if node_cache[:caseWhen].has_key?(index)
       cached = node_cache[:caseWhen][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:caseWhen][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4793,7 +4848,7 @@ module Piggly
     if node_cache[:condWhen].has_key?(index)
       cached = node_cache[:condWhen][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:condWhen][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4882,7 +4937,7 @@ module Piggly
     if node_cache[:expressionUntilSemiColon].has_key?(index)
       cached = node_cache[:expressionUntilSemiColon][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:expressionUntilSemiColon][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -4902,10 +4957,12 @@ module Piggly
         i4 = index
         r5 = _nt_tString
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_skipWords
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             i7, s7 = index, []
@@ -4913,16 +4970,19 @@ module Piggly
             s7 << r8
             if r8
               i9 = index
-              if has_terminal?(';', false, index)
-                r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(';', false, index))
+                r10 = true
+                @index += match_len
               else
-                terminal_parse_failure(';')
+                terminal_parse_failure('\';\'')
                 r10 = nil
               end
               if r10
+                @index = i9
                 r9 = nil
+                terminal_parse_failure('\';\'', true)
               else
+                @terminal_failures.pop
                 @index = i9
                 r9 = instantiate_node(SyntaxNode,input, index...index)
               end
@@ -4936,12 +4996,14 @@ module Piggly
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               i11, s11 = index, []
               i12 = index
               r13 = _nt_tSpace
               if r13
+                @index = i12
                 r12 = nil
               else
                 @index = i12
@@ -4949,10 +5011,11 @@ module Piggly
               end
               s11 << r12
               if r12
-                if has_terminal?('\G[^;]', true, index)
+                if has_terminal?(@regexps[gr = '\A[^;]'] ||= Regexp.new(gr), :regexp, index)
                   r14 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[^;]')
                   r14 = nil
                 end
                 s11 << r14
@@ -4965,6 +5028,7 @@ module Piggly
                 r11 = nil
               end
               if r11
+                r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                 r4 = r11
               else
                 @index = i4
@@ -4991,17 +5055,18 @@ module Piggly
         s0 << r15
         if r15
           i17 = index
-          if has_terminal?(';', false, index)
-            r18 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(';', false, index))
+            r18 = true
+            @index += match_len
           else
-            terminal_parse_failure(';')
+            terminal_parse_failure('\';\'')
             r18 = nil
           end
           if r18
             @index = i17
             r17 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i17
             r17 = nil
           end
           s0 << r17
@@ -5051,7 +5116,7 @@ module Piggly
     if node_cache[:expressionUntilClosingBracket].has_key?(index)
       cached = node_cache[:expressionUntilClosingBracket][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:expressionUntilClosingBracket][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5071,10 +5136,12 @@ module Piggly
         i4 = index
         r5 = _nt_tString
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_skipWords
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             i7, s7 = index, []
@@ -5082,16 +5149,19 @@ module Piggly
             s7 << r8
             if r8
               i9 = index
-              if has_terminal?(']', false, index)
-                r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(']', false, index))
+                r10 = true
+                @index += match_len
               else
-                terminal_parse_failure(']')
+                terminal_parse_failure('\']\'')
                 r10 = nil
               end
               if r10
+                @index = i9
                 r9 = nil
+                terminal_parse_failure('\']\'', true)
               else
+                @terminal_failures.pop
                 @index = i9
                 r9 = instantiate_node(SyntaxNode,input, index...index)
               end
@@ -5105,12 +5175,14 @@ module Piggly
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               i11, s11 = index, []
               i12 = index
               r13 = _nt_tSpace
               if r13
+                @index = i12
                 r12 = nil
               else
                 @index = i12
@@ -5118,10 +5190,11 @@ module Piggly
               end
               s11 << r12
               if r12
-                if has_terminal?('\G[^\\]]', true, index)
+                if has_terminal?(@regexps[gr = '\A[^\\]]'] ||= Regexp.new(gr), :regexp, index)
                   r14 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[^\\]]')
                   r14 = nil
                 end
                 s11 << r14
@@ -5134,6 +5207,7 @@ module Piggly
                 r11 = nil
               end
               if r11
+                r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                 r4 = r11
               else
                 @index = i4
@@ -5165,17 +5239,18 @@ module Piggly
         s0 << r15
         if r15
           i17 = index
-          if has_terminal?(']', false, index)
-            r18 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(']', false, index))
+            r18 = true
+            @index += match_len
           else
-            terminal_parse_failure(']')
+            terminal_parse_failure('\']\'')
             r18 = nil
           end
           if r18
             @index = i17
             r17 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i17
             r17 = nil
           end
           s0 << r17
@@ -5231,7 +5306,7 @@ module Piggly
     if node_cache[:expressionUntilThen].has_key?(index)
       cached = node_cache[:expressionUntilThen][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:expressionUntilThen][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5251,16 +5326,19 @@ module Piggly
         i4 = index
         r5 = _nt_tString
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_parenExpr
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             i7, s7 = index, []
             i8 = index
             r9 = _nt_kwTHEN
             if r9
+              @index = i8
               r8 = nil
             else
               @index = i8
@@ -5279,6 +5357,7 @@ module Piggly
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               i11, s11 = index, []
@@ -5288,6 +5367,7 @@ module Piggly
                 i13 = index
                 r14 = _nt_kwTHEN
                 if r14
+                  @index = i13
                   r13 = nil
                 else
                   @index = i13
@@ -5303,12 +5383,14 @@ module Piggly
                 r11 = nil
               end
               if r11
+                r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                 r4 = r11
               else
                 i15, s15 = index, []
                 i16 = index
                 r17 = _nt_tSpace
                 if r17
+                  @index = i16
                   r16 = nil
                 else
                   @index = i16
@@ -5319,6 +5401,7 @@ module Piggly
                   i18 = index
                   r19 = _nt_kwTHEN
                   if r19
+                    @index = i18
                     r18 = nil
                   else
                     @index = i18
@@ -5327,7 +5410,7 @@ module Piggly
                   s15 << r18
                   if r18
                     if index < input_length
-                      r20 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                      r20 = true
                       @index += 1
                     else
                       terminal_parse_failure("any character")
@@ -5344,6 +5427,7 @@ module Piggly
                   r15 = nil
                 end
                 if r15
+                  r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                   r4 = r15
                 else
                   @index = i4
@@ -5381,6 +5465,7 @@ module Piggly
             @index = i23
             r23 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i23
             r23 = nil
           end
           s0 << r23
@@ -5436,7 +5521,7 @@ module Piggly
     if node_cache[:expressionUntilWhen].has_key?(index)
       cached = node_cache[:expressionUntilWhen][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:expressionUntilWhen][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5456,16 +5541,19 @@ module Piggly
         i4 = index
         r5 = _nt_tString
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_parenExpr
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             i7, s7 = index, []
             i8 = index
             r9 = _nt_kwWHEN
             if r9
+              @index = i8
               r8 = nil
             else
               @index = i8
@@ -5484,6 +5572,7 @@ module Piggly
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               i11, s11 = index, []
@@ -5493,6 +5582,7 @@ module Piggly
                 i13 = index
                 r14 = _nt_kwWHEN
                 if r14
+                  @index = i13
                   r13 = nil
                 else
                   @index = i13
@@ -5508,12 +5598,14 @@ module Piggly
                 r11 = nil
               end
               if r11
+                r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                 r4 = r11
               else
                 i15, s15 = index, []
                 i16 = index
                 r17 = _nt_tSpace
                 if r17
+                  @index = i16
                   r16 = nil
                 else
                   @index = i16
@@ -5524,6 +5616,7 @@ module Piggly
                   i18 = index
                   r19 = _nt_kwWHEN
                   if r19
+                    @index = i18
                     r18 = nil
                   else
                     @index = i18
@@ -5532,7 +5625,7 @@ module Piggly
                   s15 << r18
                   if r18
                     if index < input_length
-                      r20 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                      r20 = true
                       @index += 1
                     else
                       terminal_parse_failure("any character")
@@ -5549,6 +5642,7 @@ module Piggly
                   r15 = nil
                 end
                 if r15
+                  r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                   r4 = r15
                 else
                   @index = i4
@@ -5586,6 +5680,7 @@ module Piggly
             @index = i23
             r23 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i23
             r23 = nil
           end
           s0 << r23
@@ -5641,7 +5736,7 @@ module Piggly
     if node_cache[:expressionUntilLoop].has_key?(index)
       cached = node_cache[:expressionUntilLoop][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:expressionUntilLoop][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5661,16 +5756,19 @@ module Piggly
         i4 = index
         r5 = _nt_tString
         if r5
+          r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
           r4 = r5
         else
           r6 = _nt_parenExpr
           if r6
+            r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
             r4 = r6
           else
             i7, s7 = index, []
             i8 = index
             r9 = _nt_kwLOOP
             if r9
+              @index = i8
               r8 = nil
             else
               @index = i8
@@ -5689,6 +5787,7 @@ module Piggly
               r7 = nil
             end
             if r7
+              r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
               r4 = r7
             else
               i11, s11 = index, []
@@ -5698,6 +5797,7 @@ module Piggly
                 i13 = index
                 r14 = _nt_kwLOOP
                 if r14
+                  @index = i13
                   r13 = nil
                 else
                   @index = i13
@@ -5713,12 +5813,14 @@ module Piggly
                 r11 = nil
               end
               if r11
+                r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                 r4 = r11
               else
                 i15, s15 = index, []
                 i16 = index
                 r17 = _nt_tSpace
                 if r17
+                  @index = i16
                   r16 = nil
                 else
                   @index = i16
@@ -5729,6 +5831,7 @@ module Piggly
                   i18 = index
                   r19 = _nt_kwLOOP
                   if r19
+                    @index = i18
                     r18 = nil
                   else
                     @index = i18
@@ -5737,7 +5840,7 @@ module Piggly
                   s15 << r18
                   if r18
                     if index < input_length
-                      r20 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                      r20 = true
                       @index += 1
                     else
                       terminal_parse_failure("any character")
@@ -5754,6 +5857,7 @@ module Piggly
                   r15 = nil
                 end
                 if r15
+                  r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                   r4 = r15
                 else
                   @index = i4
@@ -5791,6 +5895,7 @@ module Piggly
             @index = i23
             r23 = instantiate_node(SyntaxNode,input, index...index)
           else
+            @index = i23
             r23 = nil
           end
           s0 << r23
@@ -5818,18 +5923,18 @@ module Piggly
     if node_cache[:parenExpr].has_key?(index)
       cached = node_cache[:parenExpr][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:parenExpr][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('(', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-      @index += 1
+    if (match_len = has_terminal?('(', false, index))
+      r1 = true
+      @index += match_len
     else
-      terminal_parse_failure('(')
+      terminal_parse_failure('\'(\'')
       r1 = nil
     end
     s0 << r1
@@ -5839,23 +5944,28 @@ module Piggly
         i3 = index
         r4 = _nt_tString
         if r4
+          r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
           r3 = r4
         else
           r5 = _nt_tComment
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r3 = r5
           else
             r6 = _nt_parenExpr
             if r6
+              r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
               r3 = r6
             else
-              if has_terminal?('\G[^()]', true, index)
+              if has_terminal?(@regexps[gr = '\A[^()]'] ||= Regexp.new(gr), :regexp, index)
                 r7 = true
                 @index += 1
               else
+                terminal_parse_failure('[^()]')
                 r7 = nil
               end
               if r7
+                r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
                 r3 = r7
               else
                 @index = i3
@@ -5873,11 +5983,11 @@ module Piggly
       r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
       s0 << r2
       if r2
-        if has_terminal?(')', false, index)
-          r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?(')', false, index))
+          r8 = true
+          @index += match_len
         else
-          terminal_parse_failure(')')
+          terminal_parse_failure('\')\'')
           r8 = nil
         end
         s0 << r8
@@ -5901,7 +6011,7 @@ module Piggly
     if node_cache[:skipWords].has_key?(index)
       cached = node_cache[:skipWords][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:skipWords][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5909,10 +6019,11 @@ module Piggly
 
     s0, i0 = [], index
     loop do
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r1 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r1 = nil
       end
       if r1
@@ -5938,7 +6049,7 @@ module Piggly
     if node_cache[:ws].has_key?(index)
       cached = node_cache[:ws][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:ws][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -5946,10 +6057,11 @@ module Piggly
 
     s0, i0 = [], index
     loop do
-      if has_terminal?('\G[ \\t\\n\\v\\f\\r]', true, index)
+      if has_terminal?(@regexps[gr = '\A[ \\t\\n\\v\\f\\r]'] ||= Regexp.new(gr), :regexp, index)
         r1 = true
         @index += 1
       else
+        terminal_parse_failure('[ \\t\\n\\v\\f\\r]')
         r1 = nil
       end
       if r1
@@ -5985,37 +6097,39 @@ module Piggly
     if node_cache[:dollarQuoteMarker].has_key?(index)
       cached = node_cache[:dollarQuoteMarker][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:dollarQuoteMarker][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('$', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-      @index += 1
+    if (match_len = has_terminal?('$', false, index))
+      r1 = true
+      @index += match_len
     else
-      terminal_parse_failure('$')
+      terminal_parse_failure('\'$\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i3, s3 = index, []
-      if has_terminal?('\G[a-z\\200-\\377_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_]'] ||= Regexp.new(gr), :regexp, index)
         r4 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z\\200-\\377_]')
         r4 = nil
       end
       s3 << r4
       if r4
         s5, i5 = [], index
         loop do
-          if has_terminal?('\G[a-z\\200-\\377_0-9]', true, index)
+          if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_0-9]'] ||= Regexp.new(gr), :regexp, index)
             r6 = true
             @index += 1
           else
+            terminal_parse_failure('[a-z\\200-\\377_0-9]')
             r6 = nil
           end
           if r6
@@ -6041,11 +6155,11 @@ module Piggly
       end
       s0 << r2
       if r2
-        if has_terminal?('$', false, index)
-          r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('$', false, index))
+          r7 = true
+          @index += match_len
         else
-          terminal_parse_failure('$')
+          terminal_parse_failure('\'$\'')
           r7 = nil
         end
         s0 << r7
@@ -6069,17 +6183,17 @@ module Piggly
     if node_cache[:stubNode].has_key?(index)
       cached = node_cache[:stubNode][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:stubNode][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
-    if has_terminal?('', false, index)
-      r0 = instantiate_node(Piggly::Parser::Nodes::StubNode,input, index...(index + 0))
-      @index += 0
+    if (match_len = has_terminal?('', false, index))
+      r0 = instantiate_node(Piggly::Parser::Nodes::StubNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('')
+      terminal_parse_failure('\'\'')
       r0 = nil
     end
 
@@ -6093,17 +6207,17 @@ module Piggly
     if node_cache[:notImplemented].has_key?(index)
       cached = node_cache[:notImplemented][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:notImplemented][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
-    if has_terminal?('', false, index)
-      r0 = instantiate_node(Piggly::Parser::Nodes::NotImplemented,input, index...(index + 0))
-      @index += 0
+    if (match_len = has_terminal?('', false, index))
+      r0 = instantiate_node(Piggly::Parser::Nodes::NotImplemented,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('')
+      terminal_parse_failure('\'\'')
       r0 = nil
     end
 
@@ -6137,7 +6251,7 @@ module Piggly
     if node_cache[:lValue].has_key?(index)
       cached = node_cache[:lValue][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:lValue][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -6158,11 +6272,11 @@ module Piggly
         end
         s3 << r4
         if r4
-          if has_terminal?('[', false, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('[', false, index))
+            r6 = true
+            @index += match_len
           else
-            terminal_parse_failure('[')
+            terminal_parse_failure('\'[\'')
             r6 = nil
           end
           s3 << r6
@@ -6170,11 +6284,11 @@ module Piggly
             r7 = _nt_expressionUntilClosingBracket
             s3 << r7
             if r7
-              if has_terminal?(']', false, index)
-                r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(']', false, index))
+                r8 = true
+                @index += match_len
               else
-                terminal_parse_failure(']')
+                terminal_parse_failure('\']\'')
                 r8 = nil
               end
               s3 << r8
@@ -6200,10 +6314,11 @@ module Piggly
         s9, i9 = [], index
         loop do
           i10, s10 = index, []
-          if has_terminal?('\G[.]', true, index)
+          if has_terminal?(@regexps[gr = '\A[.]'] ||= Regexp.new(gr), :regexp, index)
             r11 = true
             @index += 1
           else
+            terminal_parse_failure('[.]')
             r11 = nil
           end
           s10 << r11
@@ -6246,7 +6361,7 @@ module Piggly
     if node_cache[:tEOF].has_key?(index)
       cached = node_cache[:tEOF][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tEOF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -6254,15 +6369,18 @@ module Piggly
 
     i0 = index
     if index < input_length
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r1 = true
       @index += 1
     else
       terminal_parse_failure("any character")
       r1 = nil
     end
     if r1
+      @index = i0
       r0 = nil
+      terminal_parse_failure("any character", true)
     else
+      @terminal_failures.pop
       @index = i0
       r0 = instantiate_node(SyntaxNode,input, index...index)
     end
@@ -6284,18 +6402,18 @@ module Piggly
     if node_cache[:tLabelDefinition].has_key?(index)
       cached = node_cache[:tLabelDefinition][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tLabelDefinition][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('<<', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('<<', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('<<')
+      terminal_parse_failure('\'<<\'')
       r1 = nil
     end
     s0 << r1
@@ -6319,11 +6437,11 @@ module Piggly
           end
           s0 << r5
           if r5
-            if has_terminal?('>>', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('>>', false, index))
+              r7 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
-              terminal_parse_failure('>>')
+              terminal_parse_failure('\'>>\'')
               r7 = nil
             end
             s0 << r7
@@ -6349,7 +6467,7 @@ module Piggly
     if node_cache[:tLabel].has_key?(index)
       cached = node_cache[:tLabel][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tLabel][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -6376,7 +6494,7 @@ module Piggly
     if node_cache[:tIdentifier].has_key?(index)
       cached = node_cache[:tIdentifier][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tIdentifier][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -6386,21 +6504,22 @@ module Piggly
     s1, i1 = [], index
     loop do
       i2, s2 = index, []
-      if has_terminal?('"', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-        @index += 1
+      if (match_len = has_terminal?('"', false, index))
+        r3 = true
+        @index += match_len
       else
-        terminal_parse_failure('"')
+        terminal_parse_failure('\'"\'')
         r3 = nil
       end
       s2 << r3
       if r3
         s4, i4 = [], index
         loop do
-          if has_terminal?('\G[^"]', true, index)
+          if has_terminal?(@regexps[gr = '\A[^"]'] ||= Regexp.new(gr), :regexp, index)
             r5 = true
             @index += 1
           else
+            terminal_parse_failure('[^"]')
             r5 = nil
           end
           if r5
@@ -6417,11 +6536,11 @@ module Piggly
         end
         s2 << r4
         if r4
-          if has_terminal?('"', false, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('"', false, index))
+            r6 = true
+            @index += match_len
           else
-            terminal_parse_failure('"')
+            terminal_parse_failure('\'"\'')
             r6 = nil
           end
           s2 << r6
@@ -6447,12 +6566,14 @@ module Piggly
       r1 = instantiate_node(Piggly::Parser::Nodes::TIdentifier,input, i1...index, s1)
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i7, s7 = index, []
       i8 = index
       r9 = _nt_keyword
       if r9
+        @index = i8
         r8 = nil
       else
         @index = i8
@@ -6461,20 +6582,22 @@ module Piggly
       s7 << r8
       if r8
         i10, s10 = index, []
-        if has_terminal?('\G[a-z\\200-\\377_]', true, index)
+        if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_]'] ||= Regexp.new(gr), :regexp, index)
           r11 = true
           @index += 1
         else
+          terminal_parse_failure('[a-z\\200-\\377_]')
           r11 = nil
         end
         s10 << r11
         if r11
           s12, i12 = [], index
           loop do
-            if has_terminal?('\G[a-z\\200-\\377_0-9$]', true, index)
+            if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_0-9$]'] ||= Regexp.new(gr), :regexp, index)
               r13 = true
               @index += 1
             else
+              terminal_parse_failure('[a-z\\200-\\377_0-9$]')
               r13 = nil
             end
             if r13
@@ -6503,6 +6626,7 @@ module Piggly
         r7 = nil
       end
       if r7
+        r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
         r0 = r7
       else
         @index = i0
@@ -6551,7 +6675,7 @@ module Piggly
     if node_cache[:tString].has_key?(index)
       cached = node_cache[:tString][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tString][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -6568,6 +6692,7 @@ module Piggly
         i5 = index
         r6 = _nt_dollarQuoteMarker
         if r6
+          @index = i5
           r5 = nil
         else
           @index = i5
@@ -6576,7 +6701,7 @@ module Piggly
         s4 << r5
         if r5
           if index < input_length
-            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r7 = true
             @index += 1
           else
             terminal_parse_failure("any character")
@@ -6612,14 +6737,15 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i9, s9 = index, []
-      if has_terminal?("E'", false, index)
-        r10 = instantiate_node(SyntaxNode,input, index...(index + 2))
-        @index += 2
+      if (match_len = has_terminal?("E'", false, index))
+        r10 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+        @index += match_len
       else
-        terminal_parse_failure("E'")
+        terminal_parse_failure('"E\'"')
         r10 = nil
       end
       s9 << r10
@@ -6627,23 +6753,26 @@ module Piggly
         s11, i11 = [], index
         loop do
           i12 = index
-          if has_terminal?("''", false, index)
-            r13 = instantiate_node(SyntaxNode,input, index...(index + 2))
-            @index += 2
+          if (match_len = has_terminal?("''", false, index))
+            r13 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
-            terminal_parse_failure("''")
+            terminal_parse_failure('"\'\'"')
             r13 = nil
           end
           if r13
+            r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
             r12 = r13
           else
-            if has_terminal?('\G[^\']', true, index)
+            if has_terminal?(@regexps[gr = '\A[^\']'] ||= Regexp.new(gr), :regexp, index)
               r14 = true
               @index += 1
             else
+              terminal_parse_failure('[^\']')
               r14 = nil
             end
             if r14
+              r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
               r12 = r14
             else
               @index = i12
@@ -6659,11 +6788,11 @@ module Piggly
         r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
         s9 << r11
         if r11
-          if has_terminal?("'", false, index)
-            r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?("'", false, index))
+            r15 = true
+            @index += match_len
           else
-            terminal_parse_failure("'")
+            terminal_parse_failure('"\'"')
             r15 = nil
           end
           s9 << r15
@@ -6677,14 +6806,15 @@ module Piggly
         r9 = nil
       end
       if r9
+        r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
         r0 = r9
       else
         i16, s16 = index, []
-        if has_terminal?("'", false, index)
-          r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?("'", false, index))
+          r17 = true
+          @index += match_len
         else
-          terminal_parse_failure("'")
+          terminal_parse_failure('"\'"')
           r17 = nil
         end
         s16 << r17
@@ -6692,23 +6822,26 @@ module Piggly
           s18, i18 = [], index
           loop do
             i19 = index
-            if has_terminal?("''", false, index)
-              r20 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?("''", false, index))
+              r20 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
-              terminal_parse_failure("''")
+              terminal_parse_failure('"\'\'"')
               r20 = nil
             end
             if r20
+              r20 = SyntaxNode.new(input, (index-1)...index) if r20 == true
               r19 = r20
             else
-              if has_terminal?('\G[^\']', true, index)
+              if has_terminal?(@regexps[gr = '\A[^\']'] ||= Regexp.new(gr), :regexp, index)
                 r21 = true
                 @index += 1
               else
+                terminal_parse_failure('[^\']')
                 r21 = nil
               end
               if r21
+                r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
                 r19 = r21
               else
                 @index = i19
@@ -6724,11 +6857,11 @@ module Piggly
           r18 = instantiate_node(SyntaxNode,input, i18...index, s18)
           s16 << r18
           if r18
-            if has_terminal?("'", false, index)
-              r22 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?("'", false, index))
+              r22 = true
+              @index += match_len
             else
-              terminal_parse_failure("'")
+              terminal_parse_failure('"\'"')
               r22 = nil
             end
             s16 << r22
@@ -6742,6 +6875,7 @@ module Piggly
           r16 = nil
         end
         if r16
+          r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
           r0 = r16
         else
           @index = i0
@@ -6787,17 +6921,18 @@ module Piggly
     if node_cache[:tType].has_key?(index)
       cached = node_cache[:tType][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tType][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('\G[a-z\\200-\\377_]', true, index)
+    if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_]'] ||= Regexp.new(gr), :regexp, index)
       r1 = true
       @index += 1
     else
+      terminal_parse_failure('[a-z\\200-\\377_]')
       r1 = nil
     end
     s0 << r1
@@ -6806,11 +6941,11 @@ module Piggly
       loop do
         i3 = index
         i4, s4 = index, []
-        if has_terminal?('(', false, index)
-          r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('(', false, index))
+          r5 = true
+          @index += match_len
         else
-          terminal_parse_failure('(')
+          terminal_parse_failure('\'(\'')
           r5 = nil
         end
         s4 << r5
@@ -6818,11 +6953,11 @@ module Piggly
           r6 = _nt_rType
           s4 << r6
           if r6
-            if has_terminal?(')', false, index)
-              r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(')', false, index))
+              r7 = true
+              @index += match_len
             else
-              terminal_parse_failure(')')
+              terminal_parse_failure('\')\'')
               r7 = nil
             end
             s4 << r7
@@ -6836,14 +6971,15 @@ module Piggly
           r4 = nil
         end
         if r4
+          r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
           r3 = r4
         else
           i8, s8 = index, []
-          if has_terminal?('[', false, index)
-            r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('[', false, index))
+            r9 = true
+            @index += match_len
           else
-            terminal_parse_failure('[')
+            terminal_parse_failure('\'[\'')
             r9 = nil
           end
           s8 << r9
@@ -6851,11 +6987,11 @@ module Piggly
             r10 = _nt_rType
             s8 << r10
             if r10
-              if has_terminal?(']', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?(']', false, index))
+                r11 = true
+                @index += match_len
               else
-                terminal_parse_failure(']')
+                terminal_parse_failure('\']\'')
                 r11 = nil
               end
               s8 << r11
@@ -6869,15 +7005,17 @@ module Piggly
             r8 = nil
           end
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r3 = r8
           else
             i12, s12 = index, []
             s13, i13 = [], index
             loop do
-              if has_terminal?('\G[a-z\\200-\\377_0-9$%]', true, index)
+              if has_terminal?(@regexps[gr = '\A[a-z\\200-\\377_0-9$%]'] ||= Regexp.new(gr), :regexp, index)
                 r14 = true
                 @index += 1
               else
+                terminal_parse_failure('[a-z\\200-\\377_0-9$%]')
                 r14 = nil
               end
               if r14
@@ -6894,11 +7032,11 @@ module Piggly
             end
             s12 << r13
             if r13
-              if has_terminal?('.', false, index)
-                r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('.', false, index))
+                r16 = true
+                @index += match_len
               else
-                terminal_parse_failure('.')
+                terminal_parse_failure('\'.\'')
                 r16 = nil
               end
               if r16
@@ -6916,6 +7054,7 @@ module Piggly
               r12 = nil
             end
             if r12
+              r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
               r3 = r12
             else
               i17, s17 = index, []
@@ -6926,18 +7065,22 @@ module Piggly
                 i20 = index
                 r21 = _nt_kwAS
                 if r21
+                  r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
                   r20 = r21
                 else
                   r22 = _nt_kwNOT
                   if r22
+                    r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                     r20 = r22
                   else
                     r23 = _nt_kwASSIGN
                     if r23
+                      r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                       r20 = r23
                     else
                       r24 = _nt_kwDEFAULT
                       if r24
+                        r24 = SyntaxNode.new(input, (index-1)...index) if r24 == true
                         r20 = r24
                       else
                         @index = i20
@@ -6947,8 +7090,11 @@ module Piggly
                   end
                 end
                 if r20
+                  @index = i19
                   r19 = nil
+                  terminal_parse_failure("(any alternative)", true)
                 else
+                  @terminal_failures.pop
                   @index = i19
                   r19 = instantiate_node(SyntaxNode,input, index...index)
                 end
@@ -6962,6 +7108,7 @@ module Piggly
                 r17 = nil
               end
               if r17
+                r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                 r3 = r17
               else
                 @index = i3
@@ -7011,7 +7158,7 @@ module Piggly
     if node_cache[:rType].has_key?(index)
       cached = node_cache[:rType][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:rType][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -7021,11 +7168,11 @@ module Piggly
     loop do
       i1 = index
       i2, s2 = index, []
-      if has_terminal?('(', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-        @index += 1
+      if (match_len = has_terminal?('(', false, index))
+        r3 = true
+        @index += match_len
       else
-        terminal_parse_failure('(')
+        terminal_parse_failure('\'(\'')
         r3 = nil
       end
       s2 << r3
@@ -7033,11 +7180,11 @@ module Piggly
         r4 = _nt_rType
         s2 << r4
         if r4
-          if has_terminal?(')', false, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?(')', false, index))
+            r5 = true
+            @index += match_len
           else
-            terminal_parse_failure(')')
+            terminal_parse_failure('\')\'')
             r5 = nil
           end
           s2 << r5
@@ -7051,14 +7198,15 @@ module Piggly
         r2 = nil
       end
       if r2
+        r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
         r1 = r2
       else
         i6, s6 = index, []
-        if has_terminal?('[', false, index)
-          r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?('[', false, index))
+          r7 = true
+          @index += match_len
         else
-          terminal_parse_failure('[')
+          terminal_parse_failure('\'[\'')
           r7 = nil
         end
         s6 << r7
@@ -7066,11 +7214,11 @@ module Piggly
           r8 = _nt_rType
           s6 << r8
           if r8
-            if has_terminal?(']', false, index)
-              r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
+            if (match_len = has_terminal?(']', false, index))
+              r9 = true
+              @index += match_len
             else
-              terminal_parse_failure(']')
+              terminal_parse_failure('\']\'')
               r9 = nil
             end
             s6 << r9
@@ -7084,14 +7232,16 @@ module Piggly
           r6 = nil
         end
         if r6
+          r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
           r1 = r6
         else
           s10, i10 = [], index
           loop do
-            if has_terminal?('\G[^\\(\\)\\[\\]]', true, index)
+            if has_terminal?(@regexps[gr = '\A[^\\(\\)\\[\\]]'] ||= Regexp.new(gr), :regexp, index)
               r11 = true
               @index += 1
             else
+              terminal_parse_failure('[^\\(\\)\\[\\]]')
               r11 = nil
             end
             if r11
@@ -7107,6 +7257,7 @@ module Piggly
             r10 = instantiate_node(SyntaxNode,input, i10...index, s10)
           end
           if r10
+            r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
             r1 = r10
           else
             @index = i1
@@ -7139,7 +7290,7 @@ module Piggly
     if node_cache[:tSpace].has_key?(index)
       cached = node_cache[:tSpace][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tSpace][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -7153,6 +7304,7 @@ module Piggly
       i3 = index
       r4 = _nt_tComment
       if r4
+        @index = i3
         r3 = nil
       else
         @index = i3
@@ -7168,6 +7320,7 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       s5, i5 = [], index
@@ -7175,10 +7328,12 @@ module Piggly
         i6 = index
         r7 = _nt_ws
         if r7
+          r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
           r6 = r7
         else
           r8 = _nt_tComment
           if r8
+            r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
             r6 = r8
           else
             @index = i6
@@ -7198,6 +7353,7 @@ module Piggly
         r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
       end
       if r5
+        r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
         r0 = r5
       else
         @index = i0
@@ -7232,7 +7388,7 @@ module Piggly
     if node_cache[:tComment].has_key?(index)
       cached = node_cache[:tComment][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tComment][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -7240,11 +7396,11 @@ module Piggly
 
     i0 = index
     i1, s1 = index, []
-    if has_terminal?('/*', false, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('/*', false, index))
+      r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('/*')
+      terminal_parse_failure('\'/*\'')
       r2 = nil
     end
     s1 << r2
@@ -7253,23 +7409,26 @@ module Piggly
       loop do
         i4, s4 = index, []
         i5 = index
-        if has_terminal?('*/', false, index)
-          r6 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('*/', false, index))
+          r6 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
-          terminal_parse_failure('*/')
+          terminal_parse_failure('\'*/\'')
           r6 = nil
         end
         if r6
+          @index = i5
           r5 = nil
+          terminal_parse_failure('\'*/\'', true)
         else
+          @terminal_failures.pop
           @index = i5
           r5 = instantiate_node(SyntaxNode,input, index...index)
         end
         s4 << r5
         if r5
           if index < input_length
-            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r7 = true
             @index += 1
           else
             terminal_parse_failure("any character")
@@ -7293,11 +7452,11 @@ module Piggly
       r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
       s1 << r3
       if r3
-        if has_terminal?('*/', false, index)
-          r8 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('*/', false, index))
+          r8 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
-          terminal_parse_failure('*/')
+          terminal_parse_failure('\'*/\'')
           r8 = nil
         end
         s1 << r8
@@ -7311,24 +7470,26 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       i9, s9 = index, []
-      if has_terminal?('--', false, index)
-        r10 = instantiate_node(SyntaxNode,input, index...(index + 2))
-        @index += 2
+      if (match_len = has_terminal?('--', false, index))
+        r10 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+        @index += match_len
       else
-        terminal_parse_failure('--')
+        terminal_parse_failure('\'--\'')
         r10 = nil
       end
       s9 << r10
       if r10
         s11, i11 = [], index
         loop do
-          if has_terminal?('\G[^\\n]', true, index)
+          if has_terminal?(@regexps[gr = '\A[^\\n]'] ||= Regexp.new(gr), :regexp, index)
             r12 = true
             @index += 1
           else
+            terminal_parse_failure('[^\\n]')
             r12 = nil
           end
           if r12
@@ -7341,18 +7502,20 @@ module Piggly
         s9 << r11
         if r11
           i13 = index
-          if has_terminal?("\n", false, index)
-            r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?("\n", false, index))
+            r14 = true
+            @index += match_len
           else
-            terminal_parse_failure("\n")
+            terminal_parse_failure('"\\n"')
             r14 = nil
           end
           if r14
+            r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
             r13 = r14
           else
             r15 = _nt_tEOF
             if r15
+              r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
               r13 = r15
             else
               @index = i13
@@ -7370,6 +7533,7 @@ module Piggly
         r9 = nil
       end
       if r9
+        r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
         r0 = r9
       else
         @index = i0
@@ -7390,28 +7554,29 @@ module Piggly
     if node_cache[:tBinary].has_key?(index)
       cached = node_cache[:tBinary][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tBinary][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?("b'", false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?("b'", false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure("b'")
+      terminal_parse_failure('"b\'"')
       r1 = nil
     end
     s0 << r1
     if r1
       s2, i2 = [], index
       loop do
-        if has_terminal?('\G[01]', true, index)
+        if has_terminal?(@regexps[gr = '\A[01]'] ||= Regexp.new(gr), :regexp, index)
           r3 = true
           @index += 1
         else
+          terminal_parse_failure('[01]')
           r3 = nil
         end
         if r3
@@ -7428,11 +7593,11 @@ module Piggly
       end
       s0 << r2
       if r2
-        if has_terminal?("'", false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?("'", false, index))
+          r4 = true
+          @index += match_len
         else
-          terminal_parse_failure("'")
+          terminal_parse_failure('"\'"')
           r4 = nil
         end
         s0 << r4
@@ -7459,28 +7624,29 @@ module Piggly
     if node_cache[:tHex].has_key?(index)
       cached = node_cache[:tHex][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tHex][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?("x'", false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?("x'", false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure("x'")
+      terminal_parse_failure('"x\'"')
       r1 = nil
     end
     s0 << r1
     if r1
       s2, i2 = [], index
       loop do
-        if has_terminal?('\G[0123456789abcdef]', true, index)
+        if has_terminal?(@regexps[gr = '\A[0123456789abcdef]'] ||= Regexp.new(gr), :regexp, index)
           r3 = true
           @index += 1
         else
+          terminal_parse_failure('[0123456789abcdef]')
           r3 = nil
         end
         if r3
@@ -7497,11 +7663,11 @@ module Piggly
       end
       s0 << r2
       if r2
-        if has_terminal?("'", false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+        if (match_len = has_terminal?("'", false, index))
+          r4 = true
+          @index += match_len
         else
-          terminal_parse_failure("'")
+          terminal_parse_failure('"\'"')
           r4 = nil
         end
         s0 << r4
@@ -7564,7 +7730,7 @@ module Piggly
     if node_cache[:tNumber].has_key?(index)
       cached = node_cache[:tNumber][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tNumber][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -7573,17 +7739,20 @@ module Piggly
     i0 = index
     r1 = _nt_tBinary
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       r2 = _nt_tHex
       if r2
+        r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
         r0 = r2
       else
         i3, s3 = index, []
-        if has_terminal?('\G[+-]', true, index)
+        if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
           r5 = true
           @index += 1
         else
+          terminal_parse_failure('[+-]')
           r5 = nil
         end
         if r5
@@ -7593,21 +7762,22 @@ module Piggly
         end
         s3 << r4
         if r4
-          if has_terminal?('.', false, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
+          if (match_len = has_terminal?('.', false, index))
+            r6 = true
+            @index += match_len
           else
-            terminal_parse_failure('.')
+            terminal_parse_failure('\'.\'')
             r6 = nil
           end
           s3 << r6
           if r6
             s7, i7 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r8 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r8 = nil
               end
               if r8
@@ -7625,19 +7795,20 @@ module Piggly
             s3 << r7
             if r7
               i10, s10 = index, []
-              if has_terminal?('e', false, index)
-                r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('e', false, index))
+                r11 = true
+                @index += match_len
               else
-                terminal_parse_failure('e')
+                terminal_parse_failure('\'e\'')
                 r11 = nil
               end
               s10 << r11
               if r11
-                if has_terminal?('\G[+-]', true, index)
+                if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                   r13 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[+-]')
                   r13 = nil
                 end
                 if r13
@@ -7649,10 +7820,11 @@ module Piggly
                 if r12
                   s14, i14 = [], index
                   loop do
-                    if has_terminal?('\G[0-9]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                       r15 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[0-9]')
                       r15 = nil
                     end
                     if r15
@@ -7694,13 +7866,15 @@ module Piggly
           r3 = nil
         end
         if r3
+          r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
           r0 = r3
         else
           i16, s16 = index, []
-          if has_terminal?('\G[+-]', true, index)
+          if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
             r18 = true
             @index += 1
           else
+            terminal_parse_failure('[+-]')
             r18 = nil
           end
           if r18
@@ -7712,10 +7886,11 @@ module Piggly
           if r17
             s19, i19 = [], index
             loop do
-              if has_terminal?('\G[0-9]', true, index)
+              if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                 r20 = true
                 @index += 1
               else
+                terminal_parse_failure('[0-9]')
                 r20 = nil
               end
               if r20
@@ -7732,21 +7907,22 @@ module Piggly
             end
             s16 << r19
             if r19
-              if has_terminal?('.', false, index)
-                r21 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                @index += 1
+              if (match_len = has_terminal?('.', false, index))
+                r21 = true
+                @index += match_len
               else
-                terminal_parse_failure('.')
+                terminal_parse_failure('\'.\'')
                 r21 = nil
               end
               s16 << r21
               if r21
                 s22, i22 = [], index
                 loop do
-                  if has_terminal?('\G[0-9]', true, index)
+                  if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                     r23 = true
                     @index += 1
                   else
+                    terminal_parse_failure('[0-9]')
                     r23 = nil
                   end
                   if r23
@@ -7759,19 +7935,20 @@ module Piggly
                 s16 << r22
                 if r22
                   i25, s25 = index, []
-                  if has_terminal?('e', false, index)
-                    r26 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('e', false, index))
+                    r26 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure('e')
+                    terminal_parse_failure('\'e\'')
                     r26 = nil
                   end
                   s25 << r26
                   if r26
-                    if has_terminal?('\G[+-]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                       r28 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[+-]')
                       r28 = nil
                     end
                     if r28
@@ -7783,10 +7960,11 @@ module Piggly
                     if r27
                       s29, i29 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r30 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r30 = nil
                         end
                         if r30
@@ -7829,13 +8007,15 @@ module Piggly
             r16 = nil
           end
           if r16
+            r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
             r0 = r16
           else
             i31, s31 = index, []
-            if has_terminal?('\G[+-]', true, index)
+            if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
               r33 = true
               @index += 1
             else
+              terminal_parse_failure('[+-]')
               r33 = nil
             end
             if r33
@@ -7847,10 +8027,11 @@ module Piggly
             if r32
               s34, i34 = [], index
               loop do
-                if has_terminal?('\G[0-9]', true, index)
+                if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                   r35 = true
                   @index += 1
                 else
+                  terminal_parse_failure('[0-9]')
                   r35 = nil
                 end
                 if r35
@@ -7867,11 +8048,11 @@ module Piggly
               end
               s31 << r34
               if r34
-                if has_terminal?('.', false, index)
-                  r37 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('.', false, index))
+                  r37 = true
+                  @index += match_len
                 else
-                  terminal_parse_failure('.')
+                  terminal_parse_failure('\'.\'')
                   r37 = nil
                 end
                 if r37
@@ -7882,19 +8063,20 @@ module Piggly
                 s31 << r36
                 if r36
                   i39, s39 = index, []
-                  if has_terminal?('e', false, index)
-                    r40 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('e', false, index))
+                    r40 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure('e')
+                    terminal_parse_failure('\'e\'')
                     r40 = nil
                   end
                   s39 << r40
                   if r40
-                    if has_terminal?('\G[+-]', true, index)
+                    if has_terminal?(@regexps[gr = '\A[+-]'] ||= Regexp.new(gr), :regexp, index)
                       r42 = true
                       @index += 1
                     else
+                      terminal_parse_failure('[+-]')
                       r42 = nil
                     end
                     if r42
@@ -7906,10 +8088,11 @@ module Piggly
                     if r41
                       s43, i43 = [], index
                       loop do
-                        if has_terminal?('\G[0-9]', true, index)
+                        if has_terminal?(@regexps[gr = '\A[0-9]'] ||= Regexp.new(gr), :regexp, index)
                           r44 = true
                           @index += 1
                         else
+                          terminal_parse_failure('[0-9]')
                           r44 = nil
                         end
                         if r44
@@ -7951,6 +8134,7 @@ module Piggly
               r31 = nil
             end
             if r31
+              r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
               r0 = r31
             else
               @index = i0
@@ -8043,7 +8227,7 @@ module Piggly
     if node_cache[:tLiteral].has_key?(index)
       cached = node_cache[:tLiteral][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:tLiteral][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -8063,11 +8247,11 @@ module Piggly
       end
       s3 << r4
       if r4
-        if has_terminal?('::', false, index)
-          r6 = instantiate_node(SyntaxNode,input, index...(index + 2))
-          @index += 2
+        if (match_len = has_terminal?('::', false, index))
+          r6 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
-          terminal_parse_failure('::')
+          terminal_parse_failure('\'::\'')
           r6 = nil
         end
         s3 << r6
@@ -8102,10 +8286,12 @@ module Piggly
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       r10 = _nt_tString
       if r10
+        r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
         r0 = r10
       else
         i11, s11 = index, []
@@ -8121,11 +8307,11 @@ module Piggly
           end
           s13 << r14
           if r14
-            if has_terminal?('::', false, index)
-              r16 = instantiate_node(SyntaxNode,input, index...(index + 2))
-              @index += 2
+            if (match_len = has_terminal?('::', false, index))
+              r16 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
-              terminal_parse_failure('::')
+              terminal_parse_failure('\'::\'')
               r16 = nil
             end
             s13 << r16
@@ -8160,18 +8346,20 @@ module Piggly
           r11 = nil
         end
         if r11
+          r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
           r0 = r11
         else
           r20 = _nt_tNumber
           if r20
+            r20 = SyntaxNode.new(input, (index-1)...index) if r20 == true
             r0 = r20
           else
             i21, s21 = index, []
-            if has_terminal?('cast', false, index)
-              r22 = instantiate_node(SyntaxNode,input, index...(index + 4))
-              @index += 4
+            if (match_len = has_terminal?('cast', false, index))
+              r22 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
-              terminal_parse_failure('cast')
+              terminal_parse_failure('\'cast\'')
               r22 = nil
             end
             s21 << r22
@@ -8184,11 +8372,11 @@ module Piggly
               end
               s21 << r23
               if r23
-                if has_terminal?('(', false, index)
-                  r25 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                  @index += 1
+                if (match_len = has_terminal?('(', false, index))
+                  r25 = true
+                  @index += match_len
                 else
-                  terminal_parse_failure('(')
+                  terminal_parse_failure('\'(\'')
                   r25 = nil
                 end
                 s21 << r25
@@ -8224,11 +8412,11 @@ module Piggly
                               end
                               s21 << r33
                               if r33
-                                if has_terminal?(')', false, index)
-                                  r35 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                  @index += 1
+                                if (match_len = has_terminal?(')', false, index))
+                                  r35 = true
+                                  @index += match_len
                                 else
-                                  terminal_parse_failure(')')
+                                  terminal_parse_failure('\')\'')
                                   r35 = nil
                                 end
                                 s21 << r35
@@ -8250,14 +8438,15 @@ module Piggly
               r21 = nil
             end
             if r21
+              r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
               r0 = r21
             else
               i36, s36 = index, []
-              if has_terminal?('cast', false, index)
-                r37 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                @index += 4
+              if (match_len = has_terminal?('cast', false, index))
+                r37 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                @index += match_len
               else
-                terminal_parse_failure('cast')
+                terminal_parse_failure('\'cast\'')
                 r37 = nil
               end
               s36 << r37
@@ -8270,11 +8459,11 @@ module Piggly
                 end
                 s36 << r38
                 if r38
-                  if has_terminal?('(', false, index)
-                    r40 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                    @index += 1
+                  if (match_len = has_terminal?('(', false, index))
+                    r40 = true
+                    @index += match_len
                   else
-                    terminal_parse_failure('(')
+                    terminal_parse_failure('\'(\'')
                     r40 = nil
                   end
                   s36 << r40
@@ -8310,11 +8499,11 @@ module Piggly
                                 end
                                 s36 << r48
                                 if r48
-                                  if has_terminal?(')', false, index)
-                                    r50 = instantiate_node(SyntaxNode,input, index...(index + 1))
-                                    @index += 1
+                                  if (match_len = has_terminal?(')', false, index))
+                                    r50 = true
+                                    @index += match_len
                                   else
-                                    terminal_parse_failure(')')
+                                    terminal_parse_failure('\')\'')
                                     r50 = nil
                                   end
                                   s36 << r50
@@ -8336,6 +8525,7 @@ module Piggly
                 r36 = nil
               end
               if r36
+                r36 = SyntaxNode.new(input, (index-1)...index) if r36 == true
                 r0 = r36
               else
                 @index = i0
@@ -8360,7 +8550,7 @@ module Piggly
     if node_cache[:sqlKeyword].has_key?(index)
       cached = node_cache[:sqlKeyword][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:sqlKeyword][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -8368,414 +8558,455 @@ module Piggly
 
     i0, s0 = index, []
     i1 = index
-    if has_terminal?('insert', false, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('insert', false, index))
+      r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('insert')
+      terminal_parse_failure('\'insert\'')
       r2 = nil
     end
     if r2
+      r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
       r1 = r2
     else
-      if has_terminal?('select', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 6))
-        @index += 6
+      if (match_len = has_terminal?('select', false, index))
+        r3 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+        @index += match_len
       else
-        terminal_parse_failure('select')
+        terminal_parse_failure('\'select\'')
         r3 = nil
       end
       if r3
+        r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
         r1 = r3
       else
-        if has_terminal?('update', false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 6))
-          @index += 6
+        if (match_len = has_terminal?('update', false, index))
+          r4 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+          @index += match_len
         else
-          terminal_parse_failure('update')
+          terminal_parse_failure('\'update\'')
           r4 = nil
         end
         if r4
+          r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
           r1 = r4
         else
-          if has_terminal?('delete', false, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 6))
-            @index += 6
+          if (match_len = has_terminal?('delete', false, index))
+            r5 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+            @index += match_len
           else
-            terminal_parse_failure('delete')
+            terminal_parse_failure('\'delete\'')
             r5 = nil
           end
           if r5
+            r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
             r1 = r5
           else
-            if has_terminal?('perform', false, index)
-              r6 = instantiate_node(SyntaxNode,input, index...(index + 7))
-              @index += 7
+            if (match_len = has_terminal?('perform', false, index))
+              r6 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+              @index += match_len
             else
-              terminal_parse_failure('perform')
+              terminal_parse_failure('\'perform\'')
               r6 = nil
             end
             if r6
+              r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
               r1 = r6
             else
-              if has_terminal?('execute', false, index)
-                r7 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                @index += 7
+              if (match_len = has_terminal?('execute', false, index))
+                r7 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                @index += match_len
               else
-                terminal_parse_failure('execute')
+                terminal_parse_failure('\'execute\'')
                 r7 = nil
               end
               if r7
+                r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
                 r1 = r7
               else
-                if has_terminal?('open', false, index)
-                  r8 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                  @index += 4
+                if (match_len = has_terminal?('open', false, index))
+                  r8 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                  @index += match_len
                 else
-                  terminal_parse_failure('open')
+                  terminal_parse_failure('\'open\'')
                   r8 = nil
                 end
                 if r8
+                  r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
                   r1 = r8
                 else
-                  if has_terminal?('close', false, index)
-                    r9 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                    @index += 5
+                  if (match_len = has_terminal?('close', false, index))
+                    r9 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                    @index += match_len
                   else
-                    terminal_parse_failure('close')
+                    terminal_parse_failure('\'close\'')
                     r9 = nil
                   end
                   if r9
+                    r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
                     r1 = r9
                   else
-                    if has_terminal?('lock', false, index)
-                      r10 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                      @index += 4
+                    if (match_len = has_terminal?('lock', false, index))
+                      r10 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                      @index += match_len
                     else
-                      terminal_parse_failure('lock')
+                      terminal_parse_failure('\'lock\'')
                       r10 = nil
                     end
                     if r10
+                      r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                       r1 = r10
                     else
-                      if has_terminal?('fetch', false, index)
-                        r11 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                        @index += 5
+                      if (match_len = has_terminal?('fetch', false, index))
+                        r11 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                        @index += match_len
                       else
-                        terminal_parse_failure('fetch')
+                        terminal_parse_failure('\'fetch\'')
                         r11 = nil
                       end
                       if r11
+                        r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                         r1 = r11
                       else
-                        if has_terminal?('move', false, index)
-                          r12 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                          @index += 4
+                        if (match_len = has_terminal?('move', false, index))
+                          r12 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                          @index += match_len
                         else
-                          terminal_parse_failure('move')
+                          terminal_parse_failure('\'move\'')
                           r12 = nil
                         end
                         if r12
+                          r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                           r1 = r12
                         else
-                          if has_terminal?('truncate', false, index)
-                            r13 = instantiate_node(SyntaxNode,input, index...(index + 8))
-                            @index += 8
+                          if (match_len = has_terminal?('truncate', false, index))
+                            r13 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                            @index += match_len
                           else
-                            terminal_parse_failure('truncate')
+                            terminal_parse_failure('\'truncate\'')
                             r13 = nil
                           end
                           if r13
+                            r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                             r1 = r13
                           else
-                            if has_terminal?('create', false, index)
-                              r14 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                              @index += 6
+                            if (match_len = has_terminal?('create', false, index))
+                              r14 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                              @index += match_len
                             else
-                              terminal_parse_failure('create')
+                              terminal_parse_failure('\'create\'')
                               r14 = nil
                             end
                             if r14
+                              r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
                               r1 = r14
                             else
-                              if has_terminal?('drop', false, index)
-                                r15 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                                @index += 4
+                              if (match_len = has_terminal?('drop', false, index))
+                                r15 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                @index += match_len
                               else
-                                terminal_parse_failure('drop')
+                                terminal_parse_failure('\'drop\'')
                                 r15 = nil
                               end
                               if r15
+                                r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                                 r1 = r15
                               else
-                                if has_terminal?('alter', false, index)
-                                  r16 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                                  @index += 5
+                                if (match_len = has_terminal?('alter', false, index))
+                                  r16 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                  @index += match_len
                                 else
-                                  terminal_parse_failure('alter')
+                                  terminal_parse_failure('\'alter\'')
                                   r16 = nil
                                 end
                                 if r16
+                                  r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                                   r1 = r16
                                 else
-                                  if has_terminal?('commit', false, index)
-                                    r17 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                    @index += 6
+                                  if (match_len = has_terminal?('commit', false, index))
+                                    r17 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                    @index += match_len
                                   else
-                                    terminal_parse_failure('commit')
+                                    terminal_parse_failure('\'commit\'')
                                     r17 = nil
                                   end
                                   if r17
+                                    r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                                     r1 = r17
                                   else
-                                    if has_terminal?('copy', false, index)
-                                      r18 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                                      @index += 4
+                                    if (match_len = has_terminal?('copy', false, index))
+                                      r18 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                      @index += match_len
                                     else
-                                      terminal_parse_failure('copy')
+                                      terminal_parse_failure('\'copy\'')
                                       r18 = nil
                                     end
                                     if r18
+                                      r18 = SyntaxNode.new(input, (index-1)...index) if r18 == true
                                       r1 = r18
                                     else
-                                      if has_terminal?('create', false, index)
-                                        r19 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                        @index += 6
+                                      if (match_len = has_terminal?('create', false, index))
+                                        r19 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                        @index += match_len
                                       else
-                                        terminal_parse_failure('create')
+                                        terminal_parse_failure('\'create\'')
                                         r19 = nil
                                       end
                                       if r19
+                                        r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                                         r1 = r19
                                       else
-                                        if has_terminal?('set', false, index)
-                                          r20 = instantiate_node(SyntaxNode,input, index...(index + 3))
-                                          @index += 3
+                                        if (match_len = has_terminal?('set', false, index))
+                                          r20 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                          @index += match_len
                                         else
-                                          terminal_parse_failure('set')
+                                          terminal_parse_failure('\'set\'')
                                           r20 = nil
                                         end
                                         if r20
+                                          r20 = SyntaxNode.new(input, (index-1)...index) if r20 == true
                                           r1 = r20
                                         else
-                                          if has_terminal?('start', false, index)
-                                            r21 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                                            @index += 5
+                                          if (match_len = has_terminal?('start', false, index))
+                                            r21 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                            @index += match_len
                                           else
-                                            terminal_parse_failure('start')
+                                            terminal_parse_failure('\'start\'')
                                             r21 = nil
                                           end
                                           if r21
+                                            r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
                                             r1 = r21
                                           else
-                                            if has_terminal?('notify', false, index)
-                                              r22 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                              @index += 6
+                                            if (match_len = has_terminal?('notify', false, index))
+                                              r22 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                              @index += match_len
                                             else
-                                              terminal_parse_failure('notify')
+                                              terminal_parse_failure('\'notify\'')
                                               r22 = nil
                                             end
                                             if r22
+                                              r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                                               r1 = r22
                                             else
-                                              if has_terminal?('with', false, index)
-                                                r23 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                                                @index += 4
+                                              if (match_len = has_terminal?('with', false, index))
+                                                r23 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                @index += match_len
                                               else
-                                                terminal_parse_failure('with')
+                                                terminal_parse_failure('\'with\'')
                                                 r23 = nil
                                               end
                                               if r23
+                                                r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                                                 r1 = r23
                                               else
-                                                if has_terminal?('reset', false, index)
-                                                  r24 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                                                  @index += 5
+                                                if (match_len = has_terminal?('reset', false, index))
+                                                  r24 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                  @index += match_len
                                                 else
-                                                  terminal_parse_failure('reset')
+                                                  terminal_parse_failure('\'reset\'')
                                                   r24 = nil
                                                 end
                                                 if r24
+                                                  r24 = SyntaxNode.new(input, (index-1)...index) if r24 == true
                                                   r1 = r24
                                                 else
-                                                  if has_terminal?('deallocate', false, index)
-                                                    r25 = instantiate_node(SyntaxNode,input, index...(index + 10))
-                                                    @index += 10
+                                                  if (match_len = has_terminal?('deallocate', false, index))
+                                                    r25 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                    @index += match_len
                                                   else
-                                                    terminal_parse_failure('deallocate')
+                                                    terminal_parse_failure('\'deallocate\'')
                                                     r25 = nil
                                                   end
                                                   if r25
+                                                    r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                                                     r1 = r25
                                                   else
-                                                    if has_terminal?('unlisten', false, index)
-                                                      r26 = instantiate_node(SyntaxNode,input, index...(index + 8))
-                                                      @index += 8
+                                                    if (match_len = has_terminal?('unlisten', false, index))
+                                                      r26 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                      @index += match_len
                                                     else
-                                                      terminal_parse_failure('unlisten')
+                                                      terminal_parse_failure('\'unlisten\'')
                                                       r26 = nil
                                                     end
                                                     if r26
+                                                      r26 = SyntaxNode.new(input, (index-1)...index) if r26 == true
                                                       r1 = r26
                                                     else
-                                                      if has_terminal?('discard', false, index)
-                                                        r27 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                        @index += 7
+                                                      if (match_len = has_terminal?('discard', false, index))
+                                                        r27 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                        @index += match_len
                                                       else
-                                                        terminal_parse_failure('discard')
+                                                        terminal_parse_failure('\'discard\'')
                                                         r27 = nil
                                                       end
                                                       if r27
+                                                        r27 = SyntaxNode.new(input, (index-1)...index) if r27 == true
                                                         r1 = r27
                                                       else
-                                                        if has_terminal?('listen', false, index)
-                                                          r28 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                                          @index += 6
+                                                        if (match_len = has_terminal?('listen', false, index))
+                                                          r28 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                          @index += match_len
                                                         else
-                                                          terminal_parse_failure('listen')
+                                                          terminal_parse_failure('\'listen\'')
                                                           r28 = nil
                                                         end
                                                         if r28
+                                                          r28 = SyntaxNode.new(input, (index-1)...index) if r28 == true
                                                           r1 = r28
                                                         else
-                                                          if has_terminal?('reassign', false, index)
-                                                            r29 = instantiate_node(SyntaxNode,input, index...(index + 8))
-                                                            @index += 8
+                                                          if (match_len = has_terminal?('reassign', false, index))
+                                                            r29 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                            @index += match_len
                                                           else
-                                                            terminal_parse_failure('reassign')
+                                                            terminal_parse_failure('\'reassign\'')
                                                             r29 = nil
                                                           end
                                                           if r29
+                                                            r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                                                             r1 = r29
                                                           else
-                                                            if has_terminal?('reindex', false, index)
-                                                              r30 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                              @index += 7
+                                                            if (match_len = has_terminal?('reindex', false, index))
+                                                              r30 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                              @index += match_len
                                                             else
-                                                              terminal_parse_failure('reindex')
+                                                              terminal_parse_failure('\'reindex\'')
                                                               r30 = nil
                                                             end
                                                             if r30
+                                                              r30 = SyntaxNode.new(input, (index-1)...index) if r30 == true
                                                               r1 = r30
                                                             else
-                                                              if has_terminal?('refresh', false, index)
-                                                                r31 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                                @index += 7
+                                                              if (match_len = has_terminal?('refresh', false, index))
+                                                                r31 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                @index += match_len
                                                               else
-                                                                terminal_parse_failure('refresh')
+                                                                terminal_parse_failure('\'refresh\'')
                                                                 r31 = nil
                                                               end
                                                               if r31
+                                                                r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
                                                                 r1 = r31
                                                               else
-                                                                if has_terminal?('prepare', false, index)
-                                                                  r32 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                                  @index += 7
+                                                                if (match_len = has_terminal?('prepare', false, index))
+                                                                  r32 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                  @index += match_len
                                                                 else
-                                                                  terminal_parse_failure('prepare')
+                                                                  terminal_parse_failure('\'prepare\'')
                                                                   r32 = nil
                                                                 end
                                                                 if r32
+                                                                  r32 = SyntaxNode.new(input, (index-1)...index) if r32 == true
                                                                   r1 = r32
                                                                 else
-                                                                  if has_terminal?('explain', false, index)
-                                                                    r33 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                                    @index += 7
+                                                                  if (match_len = has_terminal?('explain', false, index))
+                                                                    r33 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                    @index += match_len
                                                                   else
-                                                                    terminal_parse_failure('explain')
+                                                                    terminal_parse_failure('\'explain\'')
                                                                     r33 = nil
                                                                   end
                                                                   if r33
+                                                                    r33 = SyntaxNode.new(input, (index-1)...index) if r33 == true
                                                                     r1 = r33
                                                                   else
-                                                                    if has_terminal?('analyze', false, index)
-                                                                      r34 = instantiate_node(SyntaxNode,input, index...(index + 7))
-                                                                      @index += 7
+                                                                    if (match_len = has_terminal?('analyze', false, index))
+                                                                      r34 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                      @index += match_len
                                                                     else
-                                                                      terminal_parse_failure('analyze')
+                                                                      terminal_parse_failure('\'analyze\'')
                                                                       r34 = nil
                                                                     end
                                                                     if r34
+                                                                      r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                                                                       r1 = r34
                                                                     else
-                                                                      if has_terminal?('assert', false, index)
-                                                                        r35 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                                                        @index += 6
+                                                                      if (match_len = has_terminal?('assert', false, index))
+                                                                        r35 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                        @index += match_len
                                                                       else
-                                                                        terminal_parse_failure('assert')
+                                                                        terminal_parse_failure('\'assert\'')
                                                                         r35 = nil
                                                                       end
                                                                       if r35
+                                                                        r35 = SyntaxNode.new(input, (index-1)...index) if r35 == true
                                                                         r1 = r35
                                                                       else
-                                                                        if has_terminal?('call', false, index)
-                                                                          r36 = instantiate_node(SyntaxNode,input, index...(index + 4))
-                                                                          @index += 4
+                                                                        if (match_len = has_terminal?('call', false, index))
+                                                                          r36 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                          @index += match_len
                                                                         else
-                                                                          terminal_parse_failure('call')
+                                                                          terminal_parse_failure('\'call\'')
                                                                           r36 = nil
                                                                         end
                                                                         if r36
+                                                                          r36 = SyntaxNode.new(input, (index-1)...index) if r36 == true
                                                                           r1 = r36
                                                                         else
-                                                                          if has_terminal?('do', false, index)
-                                                                            r37 = instantiate_node(SyntaxNode,input, index...(index + 2))
-                                                                            @index += 2
+                                                                          if (match_len = has_terminal?('do', false, index))
+                                                                            r37 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                            @index += match_len
                                                                           else
-                                                                            terminal_parse_failure('do')
+                                                                            terminal_parse_failure('\'do\'')
                                                                             r37 = nil
                                                                           end
                                                                           if r37
+                                                                            r37 = SyntaxNode.new(input, (index-1)...index) if r37 == true
                                                                             r1 = r37
                                                                           else
-                                                                            if has_terminal?('import', false, index)
-                                                                              r38 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                                                              @index += 6
+                                                                            if (match_len = has_terminal?('import', false, index))
+                                                                              r38 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                              @index += match_len
                                                                             else
-                                                                              terminal_parse_failure('import')
+                                                                              terminal_parse_failure('\'import\'')
                                                                               r38 = nil
                                                                             end
                                                                             if r38
+                                                                              r38 = SyntaxNode.new(input, (index-1)...index) if r38 == true
                                                                               r1 = r38
                                                                             else
-                                                                              if has_terminal?('merge', false, index)
-                                                                                r39 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                                                                                @index += 5
+                                                                              if (match_len = has_terminal?('merge', false, index))
+                                                                                r39 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                                @index += match_len
                                                                               else
-                                                                                terminal_parse_failure('merge')
+                                                                                terminal_parse_failure('\'merge\'')
                                                                                 r39 = nil
                                                                               end
                                                                               if r39
+                                                                                r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                                                                                 r1 = r39
                                                                               else
-                                                                                if has_terminal?('rollback', false, index)
-                                                                                  r40 = instantiate_node(SyntaxNode,input, index...(index + 8))
-                                                                                  @index += 8
+                                                                                if (match_len = has_terminal?('rollback', false, index))
+                                                                                  r40 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                                  @index += match_len
                                                                                 else
-                                                                                  terminal_parse_failure('rollback')
+                                                                                  terminal_parse_failure('\'rollback\'')
                                                                                   r40 = nil
                                                                                 end
                                                                                 if r40
+                                                                                  r40 = SyntaxNode.new(input, (index-1)...index) if r40 == true
                                                                                   r1 = r40
                                                                                 else
-                                                                                  if has_terminal?('grant', false, index)
-                                                                                    r41 = instantiate_node(SyntaxNode,input, index...(index + 5))
-                                                                                    @index += 5
+                                                                                  if (match_len = has_terminal?('grant', false, index))
+                                                                                    r41 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                                    @index += match_len
                                                                                   else
-                                                                                    terminal_parse_failure('grant')
+                                                                                    terminal_parse_failure('\'grant\'')
                                                                                     r41 = nil
                                                                                   end
                                                                                   if r41
+                                                                                    r41 = SyntaxNode.new(input, (index-1)...index) if r41 == true
                                                                                     r1 = r41
                                                                                   else
-                                                                                    if has_terminal?('revoke', false, index)
-                                                                                      r42 = instantiate_node(SyntaxNode,input, index...(index + 6))
-                                                                                      @index += 6
+                                                                                    if (match_len = has_terminal?('revoke', false, index))
+                                                                                      r42 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+                                                                                      @index += match_len
                                                                                     else
-                                                                                      terminal_parse_failure('revoke')
+                                                                                      terminal_parse_failure('\'revoke\'')
                                                                                       r42 = nil
                                                                                     end
                                                                                     if r42
+                                                                                      r42 = SyntaxNode.new(input, (index-1)...index) if r42 == true
                                                                                       r1 = r42
                                                                                     else
                                                                                       @index = i1
@@ -8824,15 +9055,19 @@ module Piggly
     s0 << r1
     if r1
       i43 = index
-      if has_terminal?('\G[a-z0-9]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9]'] ||= Regexp.new(gr), :regexp, index)
         r44 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9]')
         r44 = nil
       end
       if r44
+        @index = i43
         r43 = nil
+        terminal_parse_failure('[a-z0-9]', true)
       else
+        @terminal_failures.pop
         @index = i43
         r43 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -8856,7 +9091,7 @@ module Piggly
     if node_cache[:keyword].has_key?(index)
       cached = node_cache[:keyword][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:keyword][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -8865,206 +9100,257 @@ module Piggly
     i0 = index
     r1 = _nt_kwWHEN
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
       r2 = _nt_kwAS
       if r2
+        r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
         r0 = r2
       else
         r3 = _nt_kwASSIGN
         if r3
+          r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
           r0 = r3
         else
           r4 = _nt_kwALIAS
           if r4
+            r4 = SyntaxNode.new(input, (index-1)...index) if r4 == true
             r0 = r4
           else
             r5 = _nt_kwBEGIN
             if r5
+              r5 = SyntaxNode.new(input, (index-1)...index) if r5 == true
               r0 = r5
             else
               r6 = _nt_kwBY
               if r6
+                r6 = SyntaxNode.new(input, (index-1)...index) if r6 == true
                 r0 = r6
               else
                 r7 = _nt_kwCASE
                 if r7
+                  r7 = SyntaxNode.new(input, (index-1)...index) if r7 == true
                   r0 = r7
                 else
                   r8 = _nt_kwARRAY
                   if r8
+                    r8 = SyntaxNode.new(input, (index-1)...index) if r8 == true
                     r0 = r8
                   else
                     r9 = _nt_kwCOLLATE
                     if r9
+                      r9 = SyntaxNode.new(input, (index-1)...index) if r9 == true
                       r0 = r9
                     else
                       r10 = _nt_kwCONSTANT
                       if r10
+                        r10 = SyntaxNode.new(input, (index-1)...index) if r10 == true
                         r0 = r10
                       else
                         r11 = _nt_kwCONTINUE
                         if r11
+                          r11 = SyntaxNode.new(input, (index-1)...index) if r11 == true
                           r0 = r11
                         else
                           r12 = _nt_kwCURSOR
                           if r12
+                            r12 = SyntaxNode.new(input, (index-1)...index) if r12 == true
                             r0 = r12
                           else
                             r13 = _nt_kwDEBUG
                             if r13
+                              r13 = SyntaxNode.new(input, (index-1)...index) if r13 == true
                               r0 = r13
                             else
                               r14 = _nt_kwDECLARE
                               if r14
+                                r14 = SyntaxNode.new(input, (index-1)...index) if r14 == true
                                 r0 = r14
                               else
                                 r15 = _nt_kwDEFAULT
                                 if r15
+                                  r15 = SyntaxNode.new(input, (index-1)...index) if r15 == true
                                   r0 = r15
                                 else
                                   r16 = _nt_kwDIAGNOSTICS
                                   if r16
+                                    r16 = SyntaxNode.new(input, (index-1)...index) if r16 == true
                                     r0 = r16
                                   else
                                     r17 = _nt_kwELSE
                                     if r17
+                                      r17 = SyntaxNode.new(input, (index-1)...index) if r17 == true
                                       r0 = r17
                                     else
                                       r18 = _nt_kwELSIF
                                       if r18
+                                        r18 = SyntaxNode.new(input, (index-1)...index) if r18 == true
                                         r0 = r18
                                       else
                                         r19 = _nt_kwEND
                                         if r19
+                                          r19 = SyntaxNode.new(input, (index-1)...index) if r19 == true
                                           r0 = r19
                                         else
                                           r20 = _nt_kwEXCEPTION
                                           if r20
+                                            r20 = SyntaxNode.new(input, (index-1)...index) if r20 == true
                                             r0 = r20
                                           else
                                             r21 = _nt_kwEXECUTE
                                             if r21
+                                              r21 = SyntaxNode.new(input, (index-1)...index) if r21 == true
                                               r0 = r21
                                             else
                                               r22 = _nt_kwEXIT
                                               if r22
+                                                r22 = SyntaxNode.new(input, (index-1)...index) if r22 == true
                                                 r0 = r22
                                               else
                                                 r23 = _nt_kwFOR
                                                 if r23
+                                                  r23 = SyntaxNode.new(input, (index-1)...index) if r23 == true
                                                   r0 = r23
                                                 else
                                                   r24 = _nt_kwFROM
                                                   if r24
+                                                    r24 = SyntaxNode.new(input, (index-1)...index) if r24 == true
                                                     r0 = r24
                                                   else
                                                     r25 = _nt_kwGET
                                                     if r25
+                                                      r25 = SyntaxNode.new(input, (index-1)...index) if r25 == true
                                                       r0 = r25
                                                     else
                                                       r26 = _nt_kwIF
                                                       if r26
+                                                        r26 = SyntaxNode.new(input, (index-1)...index) if r26 == true
                                                         r0 = r26
                                                       else
                                                         r27 = _nt_kwIN
                                                         if r27
+                                                          r27 = SyntaxNode.new(input, (index-1)...index) if r27 == true
                                                           r0 = r27
                                                         else
                                                           r28 = _nt_kwINFO
                                                           if r28
+                                                            r28 = SyntaxNode.new(input, (index-1)...index) if r28 == true
                                                             r0 = r28
                                                           else
                                                             r29 = _nt_kwINSERT
                                                             if r29
+                                                              r29 = SyntaxNode.new(input, (index-1)...index) if r29 == true
                                                               r0 = r29
                                                             else
                                                               r30 = _nt_kwINTO
                                                               if r30
+                                                                r30 = SyntaxNode.new(input, (index-1)...index) if r30 == true
                                                                 r0 = r30
                                                               else
                                                                 r31 = _nt_kwIS
                                                                 if r31
+                                                                  r31 = SyntaxNode.new(input, (index-1)...index) if r31 == true
                                                                   r0 = r31
                                                                 else
                                                                   r32 = _nt_kwLOG
                                                                   if r32
+                                                                    r32 = SyntaxNode.new(input, (index-1)...index) if r32 == true
                                                                     r0 = r32
                                                                   else
                                                                     r33 = _nt_kwLOOP
                                                                     if r33
+                                                                      r33 = SyntaxNode.new(input, (index-1)...index) if r33 == true
                                                                       r0 = r33
                                                                     else
                                                                       r34 = _nt_kwNOT
                                                                       if r34
+                                                                        r34 = SyntaxNode.new(input, (index-1)...index) if r34 == true
                                                                         r0 = r34
                                                                       else
                                                                         r35 = _nt_kwNOTICE
                                                                         if r35
+                                                                          r35 = SyntaxNode.new(input, (index-1)...index) if r35 == true
                                                                           r0 = r35
                                                                         else
                                                                           r36 = _nt_kwNULL
                                                                           if r36
+                                                                            r36 = SyntaxNode.new(input, (index-1)...index) if r36 == true
                                                                             r0 = r36
                                                                           else
                                                                             r37 = _nt_kwFOREACH
                                                                             if r37
+                                                                              r37 = SyntaxNode.new(input, (index-1)...index) if r37 == true
                                                                               r0 = r37
                                                                             else
                                                                               r38 = _nt_kwOR
                                                                               if r38
+                                                                                r38 = SyntaxNode.new(input, (index-1)...index) if r38 == true
                                                                                 r0 = r38
                                                                               else
                                                                                 r39 = _nt_kwRAISE
                                                                                 if r39
+                                                                                  r39 = SyntaxNode.new(input, (index-1)...index) if r39 == true
                                                                                   r0 = r39
                                                                                 else
                                                                                   r40 = _nt_kwRENAME
                                                                                   if r40
+                                                                                    r40 = SyntaxNode.new(input, (index-1)...index) if r40 == true
                                                                                     r0 = r40
                                                                                   else
                                                                                     r41 = _nt_kwRESULTOID
                                                                                     if r41
+                                                                                      r41 = SyntaxNode.new(input, (index-1)...index) if r41 == true
                                                                                       r0 = r41
                                                                                     else
                                                                                       r42 = _nt_kwRETURN
                                                                                       if r42
+                                                                                        r42 = SyntaxNode.new(input, (index-1)...index) if r42 == true
                                                                                         r0 = r42
                                                                                       else
                                                                                         r43 = _nt_kwREVERSE
                                                                                         if r43
+                                                                                          r43 = SyntaxNode.new(input, (index-1)...index) if r43 == true
                                                                                           r0 = r43
                                                                                         else
                                                                                           r44 = _nt_kwROWCOUNT
                                                                                           if r44
+                                                                                            r44 = SyntaxNode.new(input, (index-1)...index) if r44 == true
                                                                                             r0 = r44
                                                                                           else
                                                                                             r45 = _nt_kwSCROLL
                                                                                             if r45
+                                                                                              r45 = SyntaxNode.new(input, (index-1)...index) if r45 == true
                                                                                               r0 = r45
                                                                                             else
                                                                                               r46 = _nt_kwSTRICT
                                                                                               if r46
+                                                                                                r46 = SyntaxNode.new(input, (index-1)...index) if r46 == true
                                                                                                 r0 = r46
                                                                                               else
                                                                                                 r47 = _nt_kwTHEN
                                                                                                 if r47
+                                                                                                  r47 = SyntaxNode.new(input, (index-1)...index) if r47 == true
                                                                                                   r0 = r47
                                                                                                 else
                                                                                                   r48 = _nt_kwTO
                                                                                                   if r48
+                                                                                                    r48 = SyntaxNode.new(input, (index-1)...index) if r48 == true
                                                                                                     r0 = r48
                                                                                                   else
                                                                                                     r49 = _nt_kwTYPE
                                                                                                     if r49
+                                                                                                      r49 = SyntaxNode.new(input, (index-1)...index) if r49 == true
                                                                                                       r0 = r49
                                                                                                     else
                                                                                                       r50 = _nt_kwWARNING
                                                                                                       if r50
+                                                                                                        r50 = SyntaxNode.new(input, (index-1)...index) if r50 == true
                                                                                                         r0 = r50
                                                                                                       else
                                                                                                         r51 = _nt_kwWHILE
                                                                                                         if r51
+                                                                                                          r51 = SyntaxNode.new(input, (index-1)...index) if r51 == true
                                                                                                           r0 = r51
                                                                                                         else
                                                                                                           @index = i0
@@ -9131,16 +9417,17 @@ module Piggly
     if node_cache[:x].has_key?(index)
       cached = node_cache[:x][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:x][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
-    if has_terminal?('\G[^a-z0-9_]', true, index)
+    if has_terminal?(@regexps[gr = '\A[^a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
       r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
+      terminal_parse_failure('[^a-z0-9_]')
       r0 = nil
     end
 
@@ -9157,32 +9444,36 @@ module Piggly
     if node_cache[:kwAS].has_key?(index)
       cached = node_cache[:kwAS][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwAS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('as', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('as', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('as')
+      terminal_parse_failure('\'as\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9206,31 +9497,33 @@ module Piggly
     if node_cache[:kwASSIGN].has_key?(index)
       cached = node_cache[:kwASSIGN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwASSIGN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0 = index
-    if has_terminal?(':=', false, index)
-      r1 = instantiate_node(Piggly::Parser::Nodes::TKeyword,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?(':=', false, index))
+      r1 = instantiate_node(Piggly::Parser::Nodes::TKeyword,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure(':=')
+      terminal_parse_failure('\':=\'')
       r1 = nil
     end
     if r1
+      r1 = SyntaxNode.new(input, (index-1)...index) if r1 == true
       r0 = r1
     else
-      if has_terminal?('=', false, index)
-        r2 = instantiate_node(Piggly::Parser::Nodes::TKeyword,input, index...(index + 1))
-        @index += 1
+      if (match_len = has_terminal?('=', false, index))
+        r2 = instantiate_node(Piggly::Parser::Nodes::TKeyword,input, index...(index + match_len))
+        @index += match_len
       else
-        terminal_parse_failure('=')
+        terminal_parse_failure('\'=\'')
         r2 = nil
       end
       if r2
+        r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
         r0 = r2
       else
         @index = i0
@@ -9251,32 +9544,36 @@ module Piggly
     if node_cache[:kwALIAS].has_key?(index)
       cached = node_cache[:kwALIAS][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwALIAS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('alias', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('alias', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('alias')
+      terminal_parse_failure('\'alias\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9303,32 +9600,36 @@ module Piggly
     if node_cache[:kwARRAY].has_key?(index)
       cached = node_cache[:kwARRAY][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwARRAY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('array', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('array', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('array')
+      terminal_parse_failure('\'array\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9355,32 +9656,36 @@ module Piggly
     if node_cache[:kwBEGIN].has_key?(index)
       cached = node_cache[:kwBEGIN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwBEGIN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('begin', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('begin', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('begin')
+      terminal_parse_failure('\'begin\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9407,32 +9712,36 @@ module Piggly
     if node_cache[:kwBY].has_key?(index)
       cached = node_cache[:kwBY][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwBY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('by', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('by', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('by')
+      terminal_parse_failure('\'by\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9459,32 +9768,36 @@ module Piggly
     if node_cache[:kwCASE].has_key?(index)
       cached = node_cache[:kwCASE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCASE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('case', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('case', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('case')
+      terminal_parse_failure('\'case\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9511,32 +9824,36 @@ module Piggly
     if node_cache[:kwCOLLATE].has_key?(index)
       cached = node_cache[:kwCOLLATE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCOLLATE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('collate', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('collate', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('collate')
+      terminal_parse_failure('\'collate\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9563,32 +9880,36 @@ module Piggly
     if node_cache[:kwCONSTANT].has_key?(index)
       cached = node_cache[:kwCONSTANT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCONSTANT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('constant', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if (match_len = has_terminal?('constant', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('constant')
+      terminal_parse_failure('\'constant\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9615,32 +9936,36 @@ module Piggly
     if node_cache[:kwCONTINUE].has_key?(index)
       cached = node_cache[:kwCONTINUE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCONTINUE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('continue', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 8))
-      @index += 8
+    if (match_len = has_terminal?('continue', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('continue')
+      terminal_parse_failure('\'continue\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9667,32 +9992,36 @@ module Piggly
     if node_cache[:kwCURRENT].has_key?(index)
       cached = node_cache[:kwCURRENT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCURRENT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('current', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('current', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('current')
+      terminal_parse_failure('\'current\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9719,32 +10048,36 @@ module Piggly
     if node_cache[:kwCURSOR].has_key?(index)
       cached = node_cache[:kwCURSOR][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwCURSOR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('cursor', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('cursor', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('cursor')
+      terminal_parse_failure('\'cursor\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9771,32 +10104,36 @@ module Piggly
     if node_cache[:kwDEBUG].has_key?(index)
       cached = node_cache[:kwDEBUG][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwDEBUG][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('debug', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('debug', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('debug')
+      terminal_parse_failure('\'debug\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9823,32 +10160,36 @@ module Piggly
     if node_cache[:kwDECLARE].has_key?(index)
       cached = node_cache[:kwDECLARE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwDECLARE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('declare', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('declare', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('declare')
+      terminal_parse_failure('\'declare\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9875,32 +10216,36 @@ module Piggly
     if node_cache[:kwDEFAULT].has_key?(index)
       cached = node_cache[:kwDEFAULT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwDEFAULT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('default', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('default', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('default')
+      terminal_parse_failure('\'default\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9927,32 +10272,36 @@ module Piggly
     if node_cache[:kwDIAGNOSTICS].has_key?(index)
       cached = node_cache[:kwDIAGNOSTICS][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwDIAGNOSTICS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('diagnostics', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 11))
-      @index += 11
+    if (match_len = has_terminal?('diagnostics', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('diagnostics')
+      terminal_parse_failure('\'diagnostics\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -9979,32 +10328,36 @@ module Piggly
     if node_cache[:kwELSE].has_key?(index)
       cached = node_cache[:kwELSE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwELSE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('else', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('else', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('else')
+      terminal_parse_failure('\'else\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10031,7 +10384,7 @@ module Piggly
     if node_cache[:kwELSIF].has_key?(index)
       cached = node_cache[:kwELSIF][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwELSIF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
@@ -10039,24 +10392,26 @@ module Piggly
 
     i0, s0 = index, []
     i1 = index
-    if has_terminal?('elsif', false, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('elsif', false, index))
+      r2 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('elsif')
+      terminal_parse_failure('\'elsif\'')
       r2 = nil
     end
     if r2
+      r2 = SyntaxNode.new(input, (index-1)...index) if r2 == true
       r1 = r2
     else
-      if has_terminal?('elseif', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 6))
-        @index += 6
+      if (match_len = has_terminal?('elseif', false, index))
+        r3 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+        @index += match_len
       else
-        terminal_parse_failure('elseif')
+        terminal_parse_failure('\'elseif\'')
         r3 = nil
       end
       if r3
+        r3 = SyntaxNode.new(input, (index-1)...index) if r3 == true
         r1 = r3
       else
         @index = i1
@@ -10066,15 +10421,19 @@ module Piggly
     s0 << r1
     if r1
       i4 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r5 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r5 = nil
       end
       if r5
+        @index = i4
         r4 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i4
         r4 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10101,32 +10460,36 @@ module Piggly
     if node_cache[:kwEND].has_key?(index)
       cached = node_cache[:kwEND][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwEND][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('end', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if (match_len = has_terminal?('end', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('end')
+      terminal_parse_failure('\'end\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10153,32 +10516,36 @@ module Piggly
     if node_cache[:kwEXCEPTION].has_key?(index)
       cached = node_cache[:kwEXCEPTION][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwEXCEPTION][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('exception', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if (match_len = has_terminal?('exception', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('exception')
+      terminal_parse_failure('\'exception\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10205,32 +10572,36 @@ module Piggly
     if node_cache[:kwEXECUTE].has_key?(index)
       cached = node_cache[:kwEXECUTE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwEXECUTE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('execute', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('execute', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('execute')
+      terminal_parse_failure('\'execute\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10257,32 +10628,36 @@ module Piggly
     if node_cache[:kwEXIT].has_key?(index)
       cached = node_cache[:kwEXIT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwEXIT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('exit', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('exit', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('exit')
+      terminal_parse_failure('\'exit\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10309,32 +10684,36 @@ module Piggly
     if node_cache[:kwFOR].has_key?(index)
       cached = node_cache[:kwFOR][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwFOR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('for', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if (match_len = has_terminal?('for', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('for')
+      terminal_parse_failure('\'for\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10361,32 +10740,36 @@ module Piggly
     if node_cache[:kwFOREACH].has_key?(index)
       cached = node_cache[:kwFOREACH][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwFOREACH][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('foreach', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('foreach', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('foreach')
+      terminal_parse_failure('\'foreach\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10413,32 +10796,36 @@ module Piggly
     if node_cache[:kwFROM].has_key?(index)
       cached = node_cache[:kwFROM][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwFROM][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('from', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('from', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('from')
+      terminal_parse_failure('\'from\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10465,32 +10852,36 @@ module Piggly
     if node_cache[:kwGET].has_key?(index)
       cached = node_cache[:kwGET][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwGET][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('get', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if (match_len = has_terminal?('get', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('get')
+      terminal_parse_failure('\'get\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10517,32 +10908,36 @@ module Piggly
     if node_cache[:kwIF].has_key?(index)
       cached = node_cache[:kwIF][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwIF][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('if', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('if', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('if')
+      terminal_parse_failure('\'if\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10569,32 +10964,36 @@ module Piggly
     if node_cache[:kwIN].has_key?(index)
       cached = node_cache[:kwIN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwIN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('in', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('in', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('in')
+      terminal_parse_failure('\'in\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10621,32 +11020,36 @@ module Piggly
     if node_cache[:kwINFO].has_key?(index)
       cached = node_cache[:kwINFO][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwINFO][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('info', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('info', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('info')
+      terminal_parse_failure('\'info\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10673,32 +11076,36 @@ module Piggly
     if node_cache[:kwINSERT].has_key?(index)
       cached = node_cache[:kwINSERT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwINSERT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('insert', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('insert', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('insert')
+      terminal_parse_failure('\'insert\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10725,32 +11132,36 @@ module Piggly
     if node_cache[:kwINTO].has_key?(index)
       cached = node_cache[:kwINTO][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwINTO][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('into', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('into', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('into')
+      terminal_parse_failure('\'into\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10777,32 +11188,36 @@ module Piggly
     if node_cache[:kwIS].has_key?(index)
       cached = node_cache[:kwIS][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwIS][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('is', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('is', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('is')
+      terminal_parse_failure('\'is\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10829,32 +11244,36 @@ module Piggly
     if node_cache[:kwLOG].has_key?(index)
       cached = node_cache[:kwLOG][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwLOG][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('log', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if (match_len = has_terminal?('log', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('log')
+      terminal_parse_failure('\'log\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10881,32 +11300,36 @@ module Piggly
     if node_cache[:kwLOOP].has_key?(index)
       cached = node_cache[:kwLOOP][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwLOOP][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('loop', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('loop', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('loop')
+      terminal_parse_failure('\'loop\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10933,32 +11356,36 @@ module Piggly
     if node_cache[:kwNEXT].has_key?(index)
       cached = node_cache[:kwNEXT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwNEXT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('next', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('next', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('next')
+      terminal_parse_failure('\'next\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -10985,32 +11412,36 @@ module Piggly
     if node_cache[:kwNO].has_key?(index)
       cached = node_cache[:kwNO][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwNO][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('no', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('no', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('no')
+      terminal_parse_failure('\'no\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11037,32 +11468,36 @@ module Piggly
     if node_cache[:kwNOT].has_key?(index)
       cached = node_cache[:kwNOT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwNOT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('not', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 3))
-      @index += 3
+    if (match_len = has_terminal?('not', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('not')
+      terminal_parse_failure('\'not\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11089,32 +11524,36 @@ module Piggly
     if node_cache[:kwNOTICE].has_key?(index)
       cached = node_cache[:kwNOTICE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwNOTICE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('notice', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('notice', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('notice')
+      terminal_parse_failure('\'notice\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11141,32 +11580,36 @@ module Piggly
     if node_cache[:kwNULL].has_key?(index)
       cached = node_cache[:kwNULL][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwNULL][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('null', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('null', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('null')
+      terminal_parse_failure('\'null\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11193,32 +11636,36 @@ module Piggly
     if node_cache[:kwOR].has_key?(index)
       cached = node_cache[:kwOR][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwOR][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('or', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('or', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('or')
+      terminal_parse_failure('\'or\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11245,32 +11692,36 @@ module Piggly
     if node_cache[:kwPERFORM].has_key?(index)
       cached = node_cache[:kwPERFORM][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwPERFORM][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('perform', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('perform', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('perform')
+      terminal_parse_failure('\'perform\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11297,32 +11748,36 @@ module Piggly
     if node_cache[:kwQUERY].has_key?(index)
       cached = node_cache[:kwQUERY][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwQUERY][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('query', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('query', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('query')
+      terminal_parse_failure('\'query\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11349,32 +11804,36 @@ module Piggly
     if node_cache[:kwRAISE].has_key?(index)
       cached = node_cache[:kwRAISE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwRAISE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('raise', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('raise', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('raise')
+      terminal_parse_failure('\'raise\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11401,32 +11860,36 @@ module Piggly
     if node_cache[:kwRENAME].has_key?(index)
       cached = node_cache[:kwRENAME][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwRENAME][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('rename', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('rename', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('rename')
+      terminal_parse_failure('\'rename\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11453,32 +11916,36 @@ module Piggly
     if node_cache[:kwRESULTOID].has_key?(index)
       cached = node_cache[:kwRESULTOID][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwRESULTOID][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('result_oid', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 10))
-      @index += 10
+    if (match_len = has_terminal?('result_oid', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('result_oid')
+      terminal_parse_failure('\'result_oid\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11505,32 +11972,36 @@ module Piggly
     if node_cache[:kwRETURN].has_key?(index)
       cached = node_cache[:kwRETURN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwRETURN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('return', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('return', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('return')
+      terminal_parse_failure('\'return\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11557,32 +12028,36 @@ module Piggly
     if node_cache[:kwREVERSE].has_key?(index)
       cached = node_cache[:kwREVERSE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwREVERSE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('reverse', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('reverse', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('reverse')
+      terminal_parse_failure('\'reverse\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11609,32 +12084,36 @@ module Piggly
     if node_cache[:kwROWCOUNT].has_key?(index)
       cached = node_cache[:kwROWCOUNT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwROWCOUNT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('row_count', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 9))
-      @index += 9
+    if (match_len = has_terminal?('row_count', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('row_count')
+      terminal_parse_failure('\'row_count\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11661,32 +12140,36 @@ module Piggly
     if node_cache[:kwSCROLL].has_key?(index)
       cached = node_cache[:kwSCROLL][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwSCROLL][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('scroll', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('scroll', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('scroll')
+      terminal_parse_failure('\'scroll\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11713,32 +12196,36 @@ module Piggly
     if node_cache[:kwSLICE].has_key?(index)
       cached = node_cache[:kwSLICE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwSLICE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('slice', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('slice', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('slice')
+      terminal_parse_failure('\'slice\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11765,32 +12252,36 @@ module Piggly
     if node_cache[:kwSTACKED].has_key?(index)
       cached = node_cache[:kwSTACKED][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwSTACKED][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('stacked', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('stacked', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('stacked')
+      terminal_parse_failure('\'stacked\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11817,32 +12308,36 @@ module Piggly
     if node_cache[:kwSTRICT].has_key?(index)
       cached = node_cache[:kwSTRICT][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwSTRICT][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('strict', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 6))
-      @index += 6
+    if (match_len = has_terminal?('strict', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('strict')
+      terminal_parse_failure('\'strict\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11869,32 +12364,36 @@ module Piggly
     if node_cache[:kwTHEN].has_key?(index)
       cached = node_cache[:kwTHEN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwTHEN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('then', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('then', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('then')
+      terminal_parse_failure('\'then\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11921,32 +12420,36 @@ module Piggly
     if node_cache[:kwTO].has_key?(index)
       cached = node_cache[:kwTO][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwTO][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('to', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 2))
-      @index += 2
+    if (match_len = has_terminal?('to', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('to')
+      terminal_parse_failure('\'to\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -11973,32 +12476,36 @@ module Piggly
     if node_cache[:kwTYPE].has_key?(index)
       cached = node_cache[:kwTYPE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwTYPE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('type', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('type', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('type')
+      terminal_parse_failure('\'type\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -12025,32 +12532,36 @@ module Piggly
     if node_cache[:kwWARNING].has_key?(index)
       cached = node_cache[:kwWARNING][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwWARNING][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('warning', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
-      @index += 7
+    if (match_len = has_terminal?('warning', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('warning')
+      terminal_parse_failure('\'warning\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -12077,32 +12588,36 @@ module Piggly
     if node_cache[:kwWHEN].has_key?(index)
       cached = node_cache[:kwWHEN][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwWHEN][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('when', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
-      @index += 4
+    if (match_len = has_terminal?('when', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('when')
+      terminal_parse_failure('\'when\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -12129,32 +12644,36 @@ module Piggly
     if node_cache[:kwWHILE].has_key?(index)
       cached = node_cache[:kwWHILE][index]
       if cached
-        cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
+        node_cache[:kwWHILE][index] = cached = SyntaxNode.new(input, index...(index + 1)) if cached == true
         @index = cached.interval.end
       end
       return cached
     end
 
     i0, s0 = index, []
-    if has_terminal?('while', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 5))
-      @index += 5
+    if (match_len = has_terminal?('while', false, index))
+      r1 = instantiate_node(SyntaxNode,input, index...(index + match_len))
+      @index += match_len
     else
-      terminal_parse_failure('while')
+      terminal_parse_failure('\'while\'')
       r1 = nil
     end
     s0 << r1
     if r1
       i2 = index
-      if has_terminal?('\G[a-z0-9_]', true, index)
+      if has_terminal?(@regexps[gr = '\A[a-z0-9_]'] ||= Regexp.new(gr), :regexp, index)
         r3 = true
         @index += 1
       else
+        terminal_parse_failure('[a-z0-9_]')
         r3 = nil
       end
       if r3
+        @index = i2
         r2 = nil
+        terminal_parse_failure('[a-z0-9_]', true)
       else
+        @terminal_failures.pop
         @index = i2
         r2 = instantiate_node(SyntaxNode,input, index...index)
       end
@@ -12173,9 +12692,11 @@ module Piggly
     r0
   end
 
+
+  class Parser < Treetop::Runtime::CompiledParser
+    include PigglyParser
+  end
 end
 
-class PigglyParser < Treetop::Runtime::CompiledParser
-  include Piggly
-end
+(remove_const(:PigglyParserParser) if const_defined?(:PigglyParserParser)) rescue nil; PigglyParserParser = PigglyParser::Parser
 

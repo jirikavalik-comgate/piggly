@@ -12,10 +12,11 @@ Gem::Specification.new do |s|
   s.files   -= ['lib/piggly/parser/parser.rb']
   s.license  = 'BSD-2-Clause'
 
-  s.has_rdoc = false
+  s.required_ruby_version = '>= 3.3'
+
   s.bindir   = 'bin'
   s.executables  = %w[piggly]
   s.require_path = 'lib'
-  s.add_dependency 'treetop', '~> 1.4.14'
-  s.add_dependency 'pg',      '~> 0.18.4'
+  s.add_dependency 'treetop', '~> 1.6'
+  s.add_dependency 'pg',      '~> 1.5'
 end

@@ -45,14 +45,13 @@ module Piggly
           require parser_path
         end
 
-        ::PigglyParser.new
+        ::PigglyParser::Parser.new
       end
     
     private
 
       def load_support
         require "treetop"
-        require "piggly/parser/treetop_ruby19_patch"
         require "piggly/parser/nodes"
       end
     end
