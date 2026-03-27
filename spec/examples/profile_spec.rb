@@ -122,10 +122,53 @@ describe Profile do
   end
 
   describe "summary" do
-    context "when given a procedure" do
+    def make_tag(type, pct)
+      tag = double("tag-#{type}-#{pct}", :type => type, :to_f => pct.to_f)
+      allow(tag).to receive(:id).and_return("id#{tag.object_id}")
+      tag
     end
 
     context "when not given a procedure" do
+      it "returns an empty hash when no tags have been added" do
+        expect(@profile.summary).to be_empty
+      end
+
+      it "groups tags by type and averages percentages" do
+        b1 = make_tag(:branch, 100)
+        b2 = make_tag(:branch,   0)
+        k1 = make_tag(:block,   50)
+        procedure = double('procedure', :oid => '1')
+        @profile.add(procedure, [b1, b2, k1])
+
+        result = @profile.summary
+        expect(result[:branch][:count]).to eq(2)
+        expect(result[:branch][:percent]).to eq(50.0)
+        expect(result[:block][:count]).to eq(1)
+        expect(result[:block][:percent]).to eq(50.0)
+      end
+    end
+
+    context "when given a procedure" do
+      it "returns only that procedure's tags" do
+        b1 = make_tag(:branch, 100)
+        b2 = make_tag(:block,   50)
+        k1 = make_tag(:branch,   0)
+
+        p1 = double('procedure1', :oid => 'p1')
+        p2 = double('procedure2', :oid => 'p2')
+        @profile.add(p1, [b1])
+        @profile.add(p2, [b2, k1])
+
+        result = @profile.summary(p2)
+        expect(result[:branch][:count]).to eq(1)
+        expect(result[:block][:count]).to  eq(1)
+        expect(result.key?(:branch) && result[:branch][:percent]).to eq(0.0)
+      end
+
+      it "returns empty hash for a procedure with no tags in profile" do
+        p1 = double('procedure', :oid => 'unknown')
+        expect(@profile.summary(p1)).to be_empty
+      end
     end
   end
 
@@ -151,9 +194,59 @@ describe Profile do
   end
 
   describe "empty?" do
+    it "returns true when all tags have zero coverage" do
+      t1 = double('tag1', :to_f => 0.0)
+      t2 = double('tag2', :to_f => 0.0)
+      expect(@profile.empty?([t1, t2])).to be true
+    end
+
+    it "returns false when at least one tag has coverage" do
+      t1 = double('tag1', :to_f => 0.0)
+      t2 = double('tag2', :to_f => 50.0)
+      expect(@profile.empty?([t1, t2])).to be false
+    end
+
+    it "returns true for an empty list" do
+      expect(@profile.empty?([])).to be true
+    end
   end
 
   describe "difference" do
+    def make_tag(type, pct, id_suffix)
+      tag = double("tag-#{id_suffix}", :type => type, :to_f => pct.to_f)
+      allow(tag).to receive(:id).and_return("tag#{id_suffix}")
+      tag
+    end
+
+    it "reports zero delta when coverage did not change" do
+      t1 = make_tag(:branch, 100, '1')
+      t2 = make_tag(:branch, 100, '2')
+      procedure = double('procedure', :oid => 'p1')
+      @profile.add(procedure, [t1])
+
+      result = @profile.difference(procedure, [t2])
+      expect(result).to eq("+0.0% branch")
+    end
+
+    it "reports positive delta when coverage improved" do
+      before_tag = make_tag(:branch,   0, 'b')
+      after_tag  = make_tag(:branch, 100, 'a')
+      procedure  = double('procedure', :oid => 'p1')
+      @profile.add(procedure, [after_tag])
+
+      result = @profile.difference(procedure, [before_tag])
+      expect(result).to eq("+100.0% branch")
+    end
+
+    it "reports negative delta when coverage regressed" do
+      before_tag = make_tag(:block, 100, 'b')
+      after_tag  = make_tag(:block,   0, 'a')
+      procedure  = double('procedure', :oid => 'p1')
+      @profile.add(procedure, [after_tag])
+
+      result = @profile.difference(procedure, [before_tag])
+      expect(result).to eq("-100.0% block")
+    end
   end
 
 end

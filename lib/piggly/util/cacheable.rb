@@ -11,7 +11,7 @@ module Piggly
         hash = Digest::MD5.hexdigest(::File.dirname(full))
         base = ::File.basename(file)
 
-        @config.mkpath(::File.join(@config.cache_root, classdir), base)
+        @config.mkpath(::File.join(@config.cache_root, classdir), "#{hash}-#{base}")
       end
 
     end

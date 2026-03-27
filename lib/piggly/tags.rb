@@ -134,7 +134,8 @@ module Piggly
       end
 
       def clear
-        @true, @false  = false
+        @true  = false
+        @false = false
       end
 
       def ==(other)
