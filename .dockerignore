@@ -1,0 +1,8 @@
+.git
+*.md
+*.swp
+pkg/
+tmp/
+example/piggly/
+lib/piggly/parser/parser.rb
+.bundle/

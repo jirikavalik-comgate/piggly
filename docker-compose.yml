@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: piggly
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: piggly
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U piggly"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      BUNDLE_PATH: /bundle
+      PGHOST: db
+      PGUSER: piggly
+      PGPASSWORD: secret
+      PGDATABASE: piggly
+    depends_on:
+      db:
+        condition: service_healthy
+    # Default: run the full unit test suite (no DB required)
+    command: bundle exec rake spec
+
+volumes:
+  postgres_data:
