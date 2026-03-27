@@ -1,6 +1,7 @@
 piggly:
   adapter: postgresql
-  database: piggly
-  username: piggly
-  password: secret
-  host: localhost
+  database: <%= ENV['PGDATABASE'] || 'piggly' %>
+  username: <%= ENV['PGUSER']     || 'piggly' %>
+  password: <%= ENV['PGPASSWORD'] || 'secret' %>
+  host:     <%= ENV['PGHOST']     || 'localhost' %>
+  port:     <%= ENV['PGPORT']     || 5432 %>
