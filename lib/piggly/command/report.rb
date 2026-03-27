@@ -21,7 +21,7 @@ module Piggly
         procedures = filter(config, index)
 
         if procedures.empty?
-          if filters.empty?
+          if config.filters.empty?
             abort "no stored procedures in the cache"
           else
             abort "no stored procedures in the cache matched your criteria"
@@ -39,6 +39,7 @@ module Piggly
 
         create_index(config, index, procedures, profile)
         create_reports(config, procedures, profile)
+        create_json(config, index, procedures, profile)
       end
 
       # Adds the given procedures to Profile
@@ -65,7 +66,16 @@ module Piggly
       #
       def read_profile(config, io, profile)
         np = profile.notice_processor(config)
-        io.each{|line| np.call(line) }
+        prefix = config.trace_prefix
+        count = 0
+
+        io.each_line do |line|
+          next unless line.include?(prefix)
+          np.call(line)
+          count += 1
+        end
+
+        puts "read #{count} trace messages"
       end
 
       # Store the coverage Profile on disk
@@ -82,6 +92,30 @@ module Piggly
         reporter = Reporter::Index.new(config, profile)
         reporter.install("resources/piggly.css", "resources/sortable.js", "resources/highlight.js")
         reporter.report(procedures, index)
+      end
+
+      # Create a JSON coverage summary
+      #
+      def create_json(config, index, procedures, profile)
+        require "json"
+        path = "#{config.report_root}/coverage.json"
+        puts "creating #{path}"
+
+        data = procedures.map do |p|
+          summary = profile.summary(p)
+          { "procedure" => index.label(p),
+            "signature" => p.signature,
+            "oid"       => p.oid,
+            "blocks"    => { "count" => (summary[:block][:count] rescue 0),
+                             "percent" => (summary[:block][:percent] rescue nil) },
+            "loops"     => { "count" => (summary[:loop][:count] rescue 0),
+                             "percent" => (summary[:loop][:percent] rescue nil) },
+            "branches"  => { "count" => (summary[:branch][:count] rescue 0),
+                             "percent" => (summary[:branch][:percent] rescue nil) }
+          }
+        end
+
+        File.open(path, "w") {|f| f.write(JSON.pretty_generate(data)) }
       end
 
       # Create each procedures' HTML report page
