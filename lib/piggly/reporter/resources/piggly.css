@@ -93,7 +93,7 @@ a img { border: 0; }
   overflow: visible;
   
   border-bottom: 1px solid silver; 
-  background-color: #ffffe0;
+  background-color: #def;
   color: #000;
   font-family: "Consolas", "DejaVu Sans Mono", "Monaco", "Nimbus Mono L", "Courier New";
   font-size: 9pt;
@@ -232,30 +232,30 @@ table.graph
 }
 
 /* block execution: yes, no */
-.c0 { font-weight: bold; }
-.c1 { }
+.c0 { font-weight: bold; background-color: #fdd; }
+.c1 { background-color: #dfd; }
 
 /* loop coverage */
-.l0000 { font-weight: bold; }
-.l0001 { font-weight: bold; }
-.l0010 { font-weight: bold; }
-.l0100 { font-weight: bold; }
-.l0011 { font-weight: bold; }
-.l0101 { font-weight: bold; }
-.l0110 { font-weight: bold; }
-.l0111 { font-weight: bold; }
-.l1000 { font-weight: bold; }
-.l1001 { font-weight: bold; }
-.l1010 { font-weight: bold; }
-.l1100 { font-weight: bold; }
-.l1011 { font-weight: bold; }
-.l1101 { font-weight: bold; }
-.l1110 { font-weight: bold; }
-.l1111 { }
+.l0000 { font-weight: bold; background-color: #fdd; }
+.l0001 { font-weight: bold; background-color: #ffd; }
+.l0010 { font-weight: bold; background-color: #ffd; }
+.l0100 { font-weight: bold; background-color: #ffd; }
+.l0011 { font-weight: bold; background-color: #ffd; }
+.l0101 { font-weight: bold; background-color: #ffd; }
+.l0110 { font-weight: bold; background-color: #ffd; }
+.l0111 { font-weight: bold; background-color: #ffd; }
+.l1000 { font-weight: bold; background-color: #ffd; }
+.l1001 { font-weight: bold; background-color: #ffd; }
+.l1010 { font-weight: bold; background-color: #ffd; }
+.l1100 { font-weight: bold; background-color: #ffd; }
+.l1011 { font-weight: bold; background-color: #ffd; }
+.l1101 { font-weight: bold; background-color: #ffd; }
+.l1110 { font-weight: bold; background-color: #ffd; }
+.l1111 { background-color: #dfd; }
 
 /* branch decisions: true, false */
-.b00 { font-weight: bold; } /* never evaluated */
-.b01 { font-weight: bold; color: #060; } /* never evaluates true  */
-.b10 { font-weight: bold; color: #900; } /* never evaluates false */
-.b11 { }
+.b00 { font-weight: bold; background-color: #fdd; } /* never evaluated */
+.b01 { font-weight: bold; color: #060; background-color: #ffd; } /* never evaluates true  */
+.b10 { font-weight: bold; color: #900; background-color: #ffd; } /* never evaluates false */
+.b11 { background-color: #dfd; }
 
