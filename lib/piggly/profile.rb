@@ -93,9 +93,13 @@ module Piggly
     # Build a notice processor function that records each tag execution
     #   @return [Proc]
     def notice_processor(config, stderr = $stderr)
-      pattern = /#{config.trace_prefix} (#{Tags::AbstractTag::PATTERN})(?: (.))?/
+      prefix  = config.trace_prefix
+      pattern = /#{prefix} (#{Tags::AbstractTag::PATTERN})(?: (.))?/
 
       lambda do |message|
+        # Fast skip lines that don't contain the trace prefix at all
+        return unless message.include?(prefix)
+
         if m = pattern.match(message)
           ping(m.captures[0], m.captures[1])
         else

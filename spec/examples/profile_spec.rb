@@ -41,9 +41,17 @@ describe Profile do
       end
     end
 
-    context "when message doesn't match PATTERN" do
-      it "prints the message to stderr" do
+    context "when message doesn't contain trace prefix" do
+      it "silently skips the message" do
         message = "WARNING:  Parameter was NULL and I don't like it!"
+        @stderr.should_not_receive(:puts)
+        @callback.call(message)
+      end
+    end
+
+    context "when message contains trace prefix but doesn't match PATTERN" do
+      it "prints the message to stderr" do
+        message = "WARNING:  #{@config.trace_prefix} not-a-valid-tag"
         @stderr.should_receive(:puts).with("unknown trace: #{message}")
         @callback.call(message)
       end
