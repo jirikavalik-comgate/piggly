@@ -178,6 +178,10 @@ module Piggly
       class ExitWhen < Branch
       end
 
+      # ASSERT boolean-cond [, message];
+      class Assert < Branch
+      end
+
       class UnconditionalBranch < Statement
       end
 

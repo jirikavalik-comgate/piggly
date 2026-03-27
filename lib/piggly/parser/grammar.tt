@@ -43,6 +43,7 @@ grammar PigglyParser
           / stmtContinue
           / stmtReturn
           / stmtRaise
+          / stmtAssert
           / stmtExecSql
           / stmtNull
           / stmtGetDiag )
@@ -254,6 +255,19 @@ grammar PigglyParser
     body:(kwRAISE ( tSpace level:kwEXCEPTION tSpace? )? expr:expressionUntilSemiColon) ';' <Piggly::Parser::Nodes::Throw>
   end
 
+  rule stmtAssert
+    kwASSERT
+      condSpace:tSpace
+      condStub:stubNode
+      cond:expressionUntilSemiColonOrComma
+    ',' tSpace? expressionUntilSemiColon ';' <Piggly::Parser::Nodes::Assert>
+    /
+    kwASSERT
+      condSpace:tSpace
+      condStub:stubNode
+      cond:expressionUntilSemiColon ';' <Piggly::Parser::Nodes::Assert>
+  end
+
   rule stmtExecSql
     sqlKeyword tSpace? expressionUntilSemiColon ';' <Piggly::Parser::Nodes::Sql>
   end
@@ -337,8 +351,13 @@ grammar PigglyParser
   #############################################################################
 
   rule expressionUntilSemiColon
-    head:tSpace? expr:( tString / skipWords / tSpace !';' / !tSpace [^;] )*
+    head:tSpace? expr:( tString / parenExpr / skipWords / tSpace !';' / !tSpace [^;] )*
     tail:tSpace? &';' <Piggly::Parser::Nodes::Expression>
+  end
+
+  rule expressionUntilSemiColonOrComma
+    head:tSpace? expr:( tString / parenExpr / skipWords / tSpace ![;,] / !tSpace [^;,] )+
+    tail:tSpace? &[;,] <Piggly::Parser::Nodes::Expression>
   end
 
   rule expressionUntilClosingBracket
@@ -512,7 +531,6 @@ grammar PigglyParser
     / 'prepare'
     / 'explain'
     / 'analyze'
-    / 'assert'
     / 'call'
     / 'do'
     / 'import'
@@ -530,7 +548,7 @@ grammar PigglyParser
     #   CONTINUE WHEN cond;
     #   EXIT WHEN cond;
 
-    kwWHEN / kwAS / kwASSIGN / kwALIAS / kwBEGIN / kwBY / kwCASE / kwARRAY
+    kwWHEN / kwAS / kwASSERT / kwASSIGN / kwALIAS / kwBEGIN / kwBY / kwCASE / kwARRAY
     / kwCOLLATE / kwCONSTANT / kwCONTINUE / kwCURSOR / kwDEBUG / kwDECLARE / kwDEFAULT
     / kwDIAGNOSTICS / kwELSE / kwELSIF / kwEND / kwEXCEPTION / kwEXECUTE / kwEXIT
     / kwFOR / kwFROM / kwGET / kwIF / kwIN / kwINFO / kwINSERT / kwINTO
@@ -547,6 +565,10 @@ grammar PigglyParser
 
   rule kwAS
     'as' ![a-z0-9_] <Piggly::Parser::Nodes::TKeyword>
+  end
+
+  rule kwASSERT
+    'assert' ![a-z0-9_] <Piggly::Parser::Nodes::TKeyword>
   end
 
   rule kwASSIGN
