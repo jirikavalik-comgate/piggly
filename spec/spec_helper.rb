@@ -15,6 +15,28 @@ require File.expand_path("#{File.dirname(__FILE__)}/support/database")
 Piggly::Parser.parser
 
 module Piggly
+  # Shared fixture builder: returns a hash suitable for ReifiedProcedure.from_hash
+  def self.proc_hash(overrides = {})
+    {
+      "source"             => "DECLARE x int; BEGIN x := 1; END;",
+      "oid"                => "1234",
+      "nschema"            => "public",
+      "name"               => "my_func",
+      "strict"             => "f",
+      "secdef"             => "f",
+      "setof"              => "f",
+      "tschema"            => "pg_catalog",
+      "type"               => "void",
+      "volatility"         => "v",
+      "arg_count"          => "0",
+      "arg_modes"          => "",
+      "arg_names"          => "",
+      "arg_types"          => "",
+      "arg_defaults"       => nil,
+      "arg_defaults_count" => "0"
+    }.merge(overrides)
+  end
+
   module GrammarHelper
 
     COMMENTS = ["abc defghi", "abc -- abc", "quote's", "a 'str'"]

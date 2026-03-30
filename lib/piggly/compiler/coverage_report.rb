@@ -1,6 +1,8 @@
 module Piggly
   module Compiler
 
+    StaleCacheError = Class.new(RuntimeError)
+
     #
     # Produces HTML output to report coverage of tagged nodes in the tree
     #

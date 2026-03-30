@@ -67,19 +67,78 @@ module Piggly
         end
 
         context "when the procedures used to be identified using another method" do
-          it "renames each procedure using the current identifier"
-          it "updates the index with the current identified_using"
-          it "writes the updated index to disk"
+          it "renames each procedure using the current identifier" do
+            skip "identifier migration not yet implemented"
+          end
+
+          it "updates the index with the current identified_using" do
+            skip "identifier migration not yet implemented"
+          end
+
+          it "writes the updated index to disk" do
+            skip "identifier migration not yet implemented"
+          end
         end
       end
     end
 
     describe "update" do
-      it "caches the source of new procedures"
-      it "updates the cached source of updated procedures"
-      it "purges the cached source of outdated procedures"
-      it "writes the cache index to disk"
-      it "does not write procedure source code within the cache index"
+      def make_proc(overrides = {})
+        Dumper::ReifiedProcedure.from_hash(Piggly.proc_hash(overrides))
+      end
+
+      before do
+        # start with an empty index
+        @index.instance_variable_set(:@index, {})
+        # stub file I/O used by store_source / purge_source / store_index
+        allow(File).to receive(:exist?).and_return(false)
+        allow(FileUtils).to receive(:rm_r)
+        # Default: ignore writes unless a test overrides with a specific expectation
+        allow(File).to receive(:open).with(anything, anything).and_yield(StringIO.new)
+      end
+
+      let(:new_proc) { make_proc("name" => "new_func") }
+      let(:io)       { StringIO.new }
+
+      it "caches the source of new procedures" do
+        expect(File).to receive(:open).with(new_proc.source_path(@config), "wb").and_yield(io)
+        @index.update([new_proc])
+      end
+
+      it "updates the cached source of updated procedures" do
+        # pre-seed index with a skeleton for new_proc (same identifier, different source)
+        original = make_proc("name" => "new_func", "source" => "BEGIN NULL; END;")
+        @index.instance_variable_set(:@index, {original.identifier => original})
+
+        updated = make_proc("name" => "new_func", "source" => "BEGIN NULL; NULL; END;")
+        expect(File).to receive(:open).with(updated.source_path(@config), "wb").and_yield(io)
+        @index.update([updated])
+      end
+
+      it "purges the cached source of outdated procedures" do
+        old_proc = make_proc("name" => "old_func")
+        @index.instance_variable_set(:@index, {old_proc.identifier => old_proc})
+
+        source_path = old_proc.source_path(@config)
+        allow(File).to receive(:exist?).with(source_path).and_return(true)
+        expect(FileUtils).to receive(:rm_r).with(source_path)
+        @index.update([])
+      end
+
+      it "writes the cache index to disk" do
+        index_io = StringIO.new
+        expect(File).to receive(:open).with(@index.path, "wb").and_yield(index_io)
+        @index.update([new_proc])
+      end
+
+      it "does not write procedure source code within the cache index" do
+        index_io = StringIO.new
+        allow(File).to receive(:open).with(@index.path, "wb").and_yield(index_io)
+        @index.update([new_proc])
+        # The index YAML should hold SkeletonProcedure objects, not ReifiedProcedure
+        # (i.e. no @source ivar serialised into the YAML blob)
+        expect(index_io.string).not_to include(new_proc.source(@config))
+      end
     end
 
     describe "label" do
