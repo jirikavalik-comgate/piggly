@@ -40,7 +40,15 @@ module Piggly
         if Util::File.stale?(parser_path, grammar_path)
           # Regenerate the parser when the grammar is updated
           Treetop::Compiler::GrammarCompiler.new.compile(grammar_path, parser_path)
-          load parser_path
+
+          # Suppress "already initialized constant PigglyParserParser" warning
+          # that the Treetop-generated boilerplate emits on reload.
+          verbose, $VERBOSE = $VERBOSE, nil
+          begin
+            load parser_path
+          ensure
+            $VERBOSE = verbose
+          end
         else
           require parser_path
         end
