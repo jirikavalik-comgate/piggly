@@ -139,8 +139,7 @@ module Piggly
   end
 
   describe Dumper::SkeletonProcedure do
-    def h(overrides = {}); Piggly.proc_hash(overrides); end
-    def make_proc(overrides = {}); Dumper::ReifiedProcedure.from_hash(h(overrides)); end
+    def make_proc(overrides = {}); Dumper::ReifiedProcedure.from_hash(Piggly.proc_hash(overrides)); end
 
     before do
       allow(Config).to receive(:mkpath) {|root, file| file ? File.join(root, file) : root }
@@ -261,21 +260,6 @@ module Piggly
           allow(File).to receive(:exist?).with(report_path).and_return(true)
         end
 
-        it "removes any old report files" do
-          expect(FileUtils).to receive(:rm_r).with(report_path)
-          proc.purge_source(config)
-        end
-
-        it "removes any old trace cache files" do
-          expect(FileUtils).to receive(:rm_r).with(trace_path)
-          proc.purge_source(config)
-        end
-
-        it "removes the old source cache files" do
-          expect(FileUtils).to receive(:rm_r).with(source_path)
-          proc.purge_source(config)
-        end
-
         it "removes the current report files" do
           expect(FileUtils).to receive(:rm_r).with(report_path)
           proc.purge_source(config)
@@ -298,31 +282,20 @@ module Piggly
       end
 
       context "when the procedure was identified using some other configuration setting" do
-        # Without identifier migration, purge_source only removes current-identifier files.
-        before do
-          allow(File).to receive(:exist?).with(source_path).and_return(true)
-          allow(File).to receive(:exist?).with(trace_path).and_return(true)
-          allow(File).to receive(:exist?).with(report_path).and_return(true)
+        # Without identifier migration, behaviour is identical to the "current" context above.
+        # Once migration is implemented these tests should additionally verify that
+        # old-identifier files (report, trace cache, source) are also removed.
+
+        it "removes any old report files" do
+          skip "identifier migration not yet implemented"
         end
 
-        it "removes the current report files" do
-          expect(FileUtils).to receive(:rm_r).with(report_path)
-          proc.purge_source(config)
+        it "removes any old trace cache files" do
+          skip "identifier migration not yet implemented"
         end
 
-        it "removes the current trace cache files" do
-          expect(FileUtils).to receive(:rm_r).with(trace_path)
-          proc.purge_source(config)
-        end
-
-        it "removes the current source cache files" do
-          expect(FileUtils).to receive(:rm_r).with(source_path)
-          proc.purge_source(config)
-        end
-
-        it "doesn't attempt to remove any other files" do
-          expect(FileUtils).to receive(:rm_r).exactly(3).times
-          proc.purge_source(config)
+        it "removes any old source cache files" do
+          skip "identifier migration not yet implemented"
         end
       end
     end
