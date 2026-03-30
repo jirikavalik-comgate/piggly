@@ -2,3 +2,6 @@
 pkg/*
 example/piggly
 .vscode/
+coverage/
+coverage_out/
+tmp/
