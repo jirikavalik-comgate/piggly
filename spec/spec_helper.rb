@@ -8,6 +8,9 @@ require "rspec"
 require "ostruct"
 require File.expand_path("#{File.dirname(__FILE__)}/../lib/piggly")
 
+# Load database shared context (tests skip automatically when PGHOST is absent)
+require File.expand_path("#{File.dirname(__FILE__)}/support/database")
+
 # load runtime dependencies
 Piggly::Parser.parser
 

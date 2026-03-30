@@ -72,7 +72,7 @@ module Piggly
       # install tracing functions
       @connection.exec <<-SQL
         -- Signals that a conditional expression was executed
-        CREATE OR REPLACE FUNCTION piggly_cond(message varchar, value boolean)
+        CREATE OR REPLACE FUNCTION public.piggly_cond(message varchar, value boolean)
           RETURNS boolean AS $$
         BEGIN
           IF value THEN
@@ -86,7 +86,7 @@ module Piggly
 
       @connection.exec <<-SQL
         -- Generic signal
-        CREATE OR REPLACE FUNCTION piggly_signal(message varchar, signal varchar)
+        CREATE OR REPLACE FUNCTION public.piggly_signal(message varchar, signal varchar)
           RETURNS void AS $$
         BEGIN
           RAISE WARNING '#{@config.trace_prefix} % %', message, signal;
@@ -95,7 +95,7 @@ module Piggly
 
       @connection.exec <<-SQL
         -- Signals that a (sub)expression was executed. handles '' and NULL value
-        CREATE OR REPLACE FUNCTION piggly_expr(message varchar, value varchar)
+        CREATE OR REPLACE FUNCTION public.piggly_expr(message varchar, value varchar)
           RETURNS varchar AS $$
         BEGIN
           RAISE WARNING '#{@config.trace_prefix} %', message;
@@ -105,7 +105,7 @@ module Piggly
 
       @connection.exec <<-SQL
         -- Signals that a (sub)expression was executed. handles all other types
-        CREATE OR REPLACE FUNCTION piggly_expr(message varchar, value anyelement)
+        CREATE OR REPLACE FUNCTION public.piggly_expr(message varchar, value anyelement)
           RETURNS anyelement AS $$
         BEGIN
           RAISE WARNING '#{@config.trace_prefix} %', message;
@@ -115,7 +115,7 @@ module Piggly
 
       @connection.exec <<-SQL
         -- Signals that a branch was taken
-        CREATE OR REPLACE FUNCTION piggly_branch(message varchar)
+        CREATE OR REPLACE FUNCTION public.piggly_branch(message varchar)
           RETURNS void AS $$
         BEGIN
           RAISE WARNING '#{@config.trace_prefix} %', message;
@@ -126,11 +126,11 @@ module Piggly
     # Uninstalls instrumentation support
     def uninstall_support
       @connection.set_notice_processor{|x| $stderr.puts x }
-      @connection.exec "DROP FUNCTION IF EXISTS piggly_cond(varchar, boolean)"
-      @connection.exec "DROP FUNCTION IF EXISTS piggly_expr(varchar, varchar)"
-      @connection.exec "DROP FUNCTION IF EXISTS piggly_expr(varchar, anyelement)"
-      @connection.exec "DROP FUNCTION IF EXISTS piggly_branch(varchar)"
-      @connection.exec "DROP FUNCTION IF EXISTS piggly_signal(varchar, varchar)"
+      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)"
+      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)"
+      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)"
+      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_branch(varchar)"
+      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_signal(varchar, varchar)"
     end
   end
 

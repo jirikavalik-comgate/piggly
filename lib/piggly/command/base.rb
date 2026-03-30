@@ -55,11 +55,12 @@ module Piggly
           raise "Database '#{config.connection_name}' is not configured in #{path}"
 
         PG::Connection.new(
-          host:     spec["host"],
-          port:     spec["port"],
-          dbname:   spec["database"],
-          user:     spec["username"],
-          password: spec["password"])
+          host:            spec["host"],
+          port:            spec["port"],
+          dbname:          spec["database"],
+          user:            spec["username"],
+          password:        spec["password"],
+          client_encoding: "UTF8")
       end
 
       # @return [Enumerable<SkeletonProcedure>]

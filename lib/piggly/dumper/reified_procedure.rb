@@ -121,7 +121,7 @@ module Piggly
                pg_namespace as rschema
           where pro.pronamespace = nschema.oid
             and ret.typnamespace = rschema.oid
-            and pro.proname not like 'piggly_%'
+            and (pro.proname not like 'piggly_%' or nschema.nspname != 'public')
             and pro.prorettype = ret.oid
             and pro.prolang = (select oid from pg_language where lanname = 'plpgsql')
             and pro.pronamespace not in (select oid
