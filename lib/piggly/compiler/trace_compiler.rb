@@ -18,10 +18,11 @@ module Piggly
                           *self.class.cache_sources)
       end
 
-      def compile(procedure)
-        cache = CacheDir.new(cache_path(procedure.source_path(@config)))
+      def compile(procedure, recompile: true)
+        source = procedure.source_path(@config)
+        cache  = CacheDir.new(cache_path(source))
 
-        if stale?(procedure)
+        if recompile && stale?(procedure)
           begin
           $stdout.puts "Compiling #{procedure.name}"
           tree = Parser.parse(IO.read(procedure.source_path(@config)))
@@ -105,11 +106,13 @@ module Piggly
 
     class << TraceCompiler
 
-      # Each of these files' mtimes are used to determine when another file is stale
+      # Each of these files' mtimes are used to determine when another
+      # file is stale. Only the procedure source itself is checked;
+      # gem-internal files (grammar, parser, nodes) are excluded because
+      # their mtimes change on every gem install, causing false
+      # invalidation of caches produced by a different installation.
       def cache_sources
-        [Parser.grammar_path,
-         Parser.parser_path,
-         Parser.nodes_path]
+        []
       end
     end
 

@@ -1,8 +1,6 @@
 module Piggly
   module Compiler
 
-    StaleCacheError = Class.new(RuntimeError)
-
     #
     # Produces HTML output to report coverage of tagged nodes in the tree
     #
@@ -16,13 +14,8 @@ module Piggly
       def compile(procedure, profile)
         trace = Compiler::TraceCompiler.new(@config)
 
-        if trace.stale?(procedure)
-          raise StaleCacheError,
-            "stale cached syntax tree for #{procedure.name}"
-        end
-
         # Get (copies of) the tagged nodes from the compiled tree
-        data = trace.compile(procedure)
+        data = trace.compile(procedure, recompile: false)
 
         return :html  => traverse(data[:tree], profile),
                :lines => 1 .. procedure.source(@config).count("\n") + 1

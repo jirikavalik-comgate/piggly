@@ -13,17 +13,15 @@ module Piggly
     end
 
     describe "compile" do
-      context "when trace cache is stale" do
-        before { allow(trace).to receive(:stale?).with(procedure).and_return(true) }
-
-        it "does not request the trace compiler output" do
-          expect(trace).not_to receive(:compile)
-          expect { report.compile(procedure, {}) }.to raise_error(Compiler::StaleCacheError)
+      context "delegates to TraceCompiler with recompile: false" do
+        before do
+          allow(procedure).to receive(:source).with(config).and_return("BEGIN\nEND;")
         end
 
-        it "raises StaleCacheError" do
-          expect { report.compile(procedure, {}) }.to \
-            raise_error(Compiler::StaleCacheError, /stale cached syntax tree/)
+        it "calls trace compile with recompile: false" do
+          tree = N.terminal("hello", tagged?: false, style: nil)
+          expect(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
+          report.compile(procedure, {})
         end
       end
 
@@ -35,29 +33,27 @@ module Piggly
         let(:profile) { {tag_id => tag} }
 
         before do
-          allow(trace).to receive(:stale?).with(procedure).and_return(false)
           allow(procedure).to receive(:source).with(config).and_return("BEGIN\nEND;")
         end
 
         it "recurses the children of non-terminal node" do
           child = N.terminal("hello", tagged?: false, style: nil)
           tree  = N.sequence(child)
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).to include("hello")
         end
 
         it "does not recurse terminal nodes" do
-          # A terminal's text_value is emitted directly without drilling into sub-elements
           tree = N.terminal("leaf_text", tagged?: false, style: nil)
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).to eq("leaf_text")
         end
 
         it "marks tagged terminal nodes" do
           tree = N.terminal("stmt", tagged?: true, tag_id: tag_id, style: nil)
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).to include(%[id="T#{tag_id}"])
           expect(result[:html]).to include("stmt")
@@ -65,7 +61,7 @@ module Piggly
 
         it "does not mark untagged terminal nodes" do
           tree = N.terminal("stmt", tagged?: false, style: nil)
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).not_to include("<span")
           expect(result[:html]).to eq("stmt")
@@ -73,11 +69,10 @@ module Piggly
 
         it "marks tagged non-terminal nodes" do
           inner = N.terminal("body", tagged?: false, style: nil)
-          # A non-terminal with tagged? true gets a coverage span
           tree  = N.new(tagged?: true, tag_id: tag_id,
                         terminal?: false, style: nil,
                         elements: [inner])
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).to include(%[id="T#{tag_id}"])
         end
@@ -85,7 +80,7 @@ module Piggly
         it "does not mark untagged non-terminal nodes" do
           inner = N.terminal("body", tagged?: false, style: nil)
           tree  = N.new(tagged?: false, terminal?: false, style: nil, elements: [inner])
-          allow(trace).to receive(:compile).with(procedure).and_return({tree: tree})
+          allow(trace).to receive(:compile).with(procedure, recompile: false).and_return({tree: tree})
           result = report.compile(procedure, profile)
           expect(result[:html]).not_to include(%[id="T])
           expect(result[:html]).to include("body")

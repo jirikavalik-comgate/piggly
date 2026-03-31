@@ -31,9 +31,9 @@ module Piggly::Util
       expect(File.stale?('a', 'c', 'b')).to be true
     end
 
-    it "assumes sources exist" do
-      expect{ File.stale?('a', 'd') }.to raise_error(StandardError)
-      expect{ File.stale?('c', 'a', 'x') }.to raise_error(StandardError)
+    it "treats missing sources as stale" do
+      expect(File.stale?('a', 'd')).to eq(true)
+      expect(File.stale?('c', 'a', 'x')).to eq(true)
     end
   end  
 

@@ -9,7 +9,6 @@ Gem::Specification.new do |s|
   s.summary  = 'PL/pgSQL code coverage tool'
   s.homepage = 'http://github.com/kputnam/piggly'
   s.files    = ['README*', 'Rakefile', '{spec,lib,bin}/**/*'].map{|p| Dir[p]}.flatten
-  s.files   -= ['lib/piggly/parser/parser.rb']
   s.license  = 'BSD-2-Clause'
 
   s.required_ruby_version = '>= 3.3'

@@ -46,6 +46,25 @@ module Piggly
         path_b = subject.cache_path("/dir_b/proc.sql")
         expect(path_a).not_to eq(path_b)
       end
+
+      it "produces the same hash when cache_root differs but relative path is the same" do
+        config_a = double('config_a',
+          cache_root: '/builds/project/piggly/cache',
+          mkpath: nil)
+        config_b = double('config_b',
+          cache_root: '/app/piggly/cache',
+          mkpath: nil)
+        allow(config_a).to receive(:mkpath) {|dir, base| File.join(dir, base) }
+        allow(config_b).to receive(:mkpath) {|dir, base| File.join(dir, base) }
+
+        obj_a = host_class.new(config_a)
+        obj_b = host_class.new(config_b)
+
+        path_a = obj_a.cache_path("/builds/project/piggly/cache/Dumper/proc.sql")
+        path_b = obj_b.cache_path("/app/piggly/cache/Dumper/proc.sql")
+
+        expect(File.basename(path_a)).to eq(File.basename(path_b))
+      end
     end
 
   end

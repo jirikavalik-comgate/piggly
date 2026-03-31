@@ -48,7 +48,7 @@ module Piggly
         # register each procedure in the Profile
         compiler = Compiler::TraceCompiler.new(config)
         procedures.each do |p|
-          result = compiler.compile(p)
+          result = compiler.compile(p, recompile: false)
           profile.add(p, result[:tags], result)
         end
       end
