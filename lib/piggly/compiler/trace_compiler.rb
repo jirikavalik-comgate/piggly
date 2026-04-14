@@ -29,7 +29,7 @@ module Piggly
           tree = tree.force! if tree.respond_to?(:thunk?)
 
           tags = []
-          code = traverse(tree, procedure.oid, tags)
+          code = traverse(tree, procedure.identifier, tags)
 
           cache.replace(:tree => tree, :code => code, :tags => tags)
           rescue RuntimeError => e

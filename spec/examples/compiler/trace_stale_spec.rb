@@ -102,15 +102,16 @@ module Piggly
       }.not_to raise_error
     end
 
-    it "produces identical tag IDs across independent compilations" do
-      # Two completely independent compilers + temp dirs
+    it "produces identical tag IDs across independent compilations with different OIDs" do
+      # Two completely independent compilers + temp dirs + different OIDs
+      # (simulates separate CI jobs with different PostgreSQL instances)
       tmpdir2 = Dir.mktmpdir("piggly-test2")
       begin
         config2 = Config.new
         config2.cache_root = tmpdir2
 
         proc2 = Dumper::ReifiedProcedure.from_hash(Piggly.proc_hash(
-          "oid"    => "9999",
+          "oid"    => "77777",
           "source" => source
         ))
         proc2.store_source(config2)
