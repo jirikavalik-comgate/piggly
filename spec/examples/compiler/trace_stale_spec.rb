@@ -49,7 +49,7 @@ module Piggly
       expect(tags2).to eq(tags1)
     end
 
-    it "recompiles and generates different tags when source is newer" do
+    it "recompiles with same tag IDs for same source" do
       compiler = Compiler::TraceCompiler.new(config)
 
       # First compile
@@ -66,11 +66,11 @@ module Piggly
       result2 = compiler2.compile(procedure)
       tags2   = result2[:tags].map(&:id)
 
-      # New compilation generates DIFFERENT tag IDs
-      expect(tags2).not_to eq(tags1)
+      # Deterministic: same source produces same tag IDs
+      expect(tags2).to eq(tags1)
     end
 
-    it "stale recompilation causes tag mismatch in Profile" do
+    it "recompiled tags match trace log tags in Profile" do
       compiler = Compiler::TraceCompiler.new(config)
 
       # Simulate trace job: compile and register tags
@@ -96,10 +96,39 @@ module Piggly
       report_profile = Profile.new
       report_profile.add(procedure, tags2, result2)
 
-      # Try to ping using ORIGINAL tag IDs (from trace log) — fails
+      # Deterministic: original tag IDs still work after recompilation
       expect {
-        report_profile.ping(tags1.first.id)
-      }.to raise_error(RuntimeError, /No tag with id/)
+        tags1.each { |t| report_profile.ping(t.id) }
+      }.not_to raise_error
+    end
+
+    it "produces identical tag IDs across independent compilations" do
+      # Two completely independent compilers + temp dirs
+      tmpdir2 = Dir.mktmpdir("piggly-test2")
+      begin
+        config2 = Config.new
+        config2.cache_root = tmpdir2
+
+        proc2 = Dumper::ReifiedProcedure.from_hash(Piggly.proc_hash(
+          "oid"    => "9999",
+          "source" => source
+        ))
+        proc2.store_source(config2)
+
+        compiler1 = Compiler::TraceCompiler.new(config)
+        compiler2 = Compiler::TraceCompiler.new(config2)
+
+        result1 = compiler1.compile(procedure)
+        result2 = compiler2.compile(proc2.skeleton)
+
+        ids1 = result1[:tags].map(&:id)
+        ids2 = result2[:tags].map(&:id)
+
+        expect(ids1).not_to be_empty
+        expect(ids1).to eq(ids2)
+      ensure
+        FileUtils.rm_rf(tmpdir2)
+      end
     end
 
     it "with recompile: false, returns cached tags even when stale" do

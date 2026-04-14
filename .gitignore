@@ -5,3 +5,6 @@ example/piggly
 coverage/
 coverage_out/
 tmp/
+sql-coverage/
+sql-coverage-single.html
+merge_report.py

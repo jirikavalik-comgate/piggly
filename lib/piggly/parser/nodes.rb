@@ -21,6 +21,7 @@ class NodeClass
   #
   def tag(prefix = nil, id = nil)
     unless defined? @tag_id
+      id ||= interval.to_s
       if named?(:body)
         Piggly::Tags::BlockTag.new(prefix, id)
       else
@@ -98,6 +99,7 @@ module Piggly
 
         def tag(prefix = nil, id = nil)
           unless defined? @tag_id
+            id ||= interval.to_s
             if named?(:cond)
               if parent.while?
                 # This node is the conditional in a WHILE loop
@@ -263,6 +265,7 @@ module Piggly
 
         def tag(prefix = nil, id = nil)
           unless defined? @tag_id
+            id ||= interval.to_s
             if named?(:cond) and parent.for?
               # This node is the conditional in a FOR loop
               Tags::UnconditionalLoopTag.new(prefix, id)
@@ -312,6 +315,7 @@ module Piggly
 
         def tag(prefix = nil, id = nil)
           unless defined? @tag_id
+            id ||= interval.to_s
             if named?(:cond) and parent.loop?
               Tags::UnconditionalLoopTag.new(prefix, id)
             else
