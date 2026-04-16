@@ -8,7 +8,7 @@ module Piggly
     class ReifiedProcedure < SkeletonProcedure
 
       def initialize(source, oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults)
-        @source = source.strip
+        @source = source.rstrip
 
         if type.name == "record" and type.schema == "pg_catalog" and arg_modes.include?("t")
           prefix       = arg_modes.take_while{|m| m != "t" }.length

@@ -155,7 +155,7 @@ module Piggly
 
       it "specifies source code between dollar-quoted string tags" do
         proc = make_proc
-        expect(proc.definition("BODY")).to include("$__PIGGLY__$\nBODY\n$__PIGGLY__$")
+        expect(proc.definition("BODY")).to include("$__PIGGLY__$BODY\n$__PIGGLY__$")
       end
 
       context "with argument modes" do

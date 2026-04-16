@@ -239,7 +239,7 @@ describe "Installer (integration)" do
         JOIN pg_namespace n ON n.oid = p.pronamespace
         WHERE n.nspname = 'public' AND p.proname = 'test_branches'
       SQL
-      expect(row["prosrc"].strip).to eq(original_source)
+      expect(row["prosrc"].rstrip).to eq(original_source)
     end
 
     it "raises when trying to store an already-instrumented source" do
@@ -277,7 +277,7 @@ describe "Installer (integration)" do
         JOIN pg_namespace n ON n.oid = p.pronamespace
         WHERE n.nspname = 'public' AND p.proname = 'test_loop'
       SQL
-      expect(row["prosrc"].strip.encode("UTF-8")).to eq(original)
+      expect(row["prosrc"].rstrip.encode("UTF-8")).to eq(original)
     ensure
       Piggly::DatabaseHelper.drop_helpers(conn)
     end

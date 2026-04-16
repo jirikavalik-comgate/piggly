@@ -48,8 +48,7 @@ module Piggly
       # @return [String]
       def definition(body)
         [%[create or replace function #{name.quote} (#{arguments})],
-         %[ returns #{setof}#{type.quote} as $__PIGGLY__$],
-         body,
+         %[ returns #{setof}#{type.quote} as $__PIGGLY__$#{body}],
          %[$__PIGGLY__$ language plpgsql #{strictness} #{security} #{@volatility}]].join("\n")
       end
 
