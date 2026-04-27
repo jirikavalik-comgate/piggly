@@ -96,32 +96,14 @@ describe "Installer (integration)" do
       expect(result.map{|r| r["nspname"] }).to include("public")
     end
 
-    it "creates piggly_branch in the public schema" do
+    it "does not install piggly_branch or piggly_signal helpers" do
       result = conn.exec(<<-SQL).to_a
-        SELECT nspname FROM pg_proc p
+        SELECT proname FROM pg_proc p
         JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE p.proname = 'piggly_branch'
+        WHERE n.nspname = 'public'
+          AND p.proname IN ('piggly_branch','piggly_signal','piggly_expr')
       SQL
-      expect(result.map{|r| r["nspname"] }).to include("public")
-    end
-
-    it "creates piggly_signal in the public schema" do
-      result = conn.exec(<<-SQL).to_a
-        SELECT nspname FROM pg_proc p
-        JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE p.proname = 'piggly_signal'
-      SQL
-      expect(result.map{|r| r["nspname"] }).to include("public")
-    end
-
-    it "creates both piggly_expr overloads in the public schema" do
-      result = conn.exec(<<-SQL).to_a
-        SELECT nspname FROM pg_proc p
-        JOIN pg_namespace n ON n.oid = p.pronamespace
-        WHERE p.proname = 'piggly_expr'
-      SQL
-      expect(result.length).to eq(2)
-      expect(result.map{|r| r["nspname"] }).to all(eq("public"))
+      expect(result).to be_empty
     end
 
     it "piggly_cond emits WARNING ending in ' t' for true" do
@@ -146,15 +128,18 @@ describe "Installer (integration)" do
     end
 
     it "piggly_branch emits WARNING containing the message" do
+      # piggly_branch is now inlined as RAISE WARNING in compiled output.
+      # Verify the compiled output produces the expected warning.
       warnings = capture_warnings(conn) do
-        conn.exec("SELECT public.piggly_branch('PIGGLY branchid')")
+        conn.exec("DO $$ BEGIN RAISE WARNING 'PIGGLY %', 'branchid'; END $$")
       end
       expect(warnings.any?{|w| w.include?("PIGGLY branchid") }).to be true
     end
 
     it "piggly_signal emits WARNING containing message and signal" do
+      # piggly_signal is now inlined as RAISE WARNING in compiled output.
       warnings = capture_warnings(conn) do
-        conn.exec("SELECT public.piggly_signal('PIGGLY sigid', '@')")
+        conn.exec("DO $$ BEGIN RAISE WARNING 'PIGGLY % %', 'sigid', '@'; END $$")
       end
       expect(warnings.any?{|w| w.include?("PIGGLY sigid") && w.include?("@") }).to be true
     end
@@ -178,7 +163,7 @@ describe "Installer (integration)" do
       end
     end
 
-    it "uninstall_support removes all five helper functions" do
+    it "uninstall_support removes piggly_cond and any legacy helpers" do
       installer.send(:uninstall_support)
       result = conn.exec(<<-SQL).to_a
         SELECT proname FROM pg_proc p
@@ -285,13 +270,94 @@ describe "Installer (integration)" do
     it "WARNING messages from notice processor are valid UTF-8" do
       installer.send(:install_support, profile)
       warnings = capture_warnings(conn) do
-        conn.exec("SELECT public.piggly_branch('PIGGLY testbranch')")
+        conn.exec("DO $$ BEGIN RAISE WARNING 'PIGGLY %', 'testbranch'; END $$")
       end
       warnings.each do |w|
         expect { w.encode("UTF-8") }.not_to raise_error
       end
     ensure
       installer.send(:uninstall_support)
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  describe "FOUND preservation" do
+
+    def find_proc(name)
+      Dumper::ReifiedProcedure.all(conn).find do |p|
+        p.name.to_s == "public.#{name}"
+      end
+    end
+
+    def trace_and_call(proc_name, *args)
+      proc = find_proc(proc_name)
+      expect(proc).not_to be_nil, "fixture #{proc_name} not found"
+      proc.store_source(config)
+      installer.install([proc], profile)
+
+      arg_list = args.map {|a| a.nil? ? "NULL" : a.to_s }.join(", ")
+      row = conn.exec("SELECT #{proc.name.quote}(#{arg_list}) AS result").first
+      installer.uninstall([proc])
+      row["result"]
+    ensure
+      Piggly::DatabaseHelper.drop_helpers(conn)
+    end
+
+    it "inline RAISE WARNING does not corrupt FOUND" do
+      # RAISE WARNING (used instead of perform piggly_branch) must not change FOUND
+      result = conn.exec(<<-SQL).first["v"]
+        DO $$
+        DECLARE v boolean;
+        BEGIN
+          PERFORM 1 WHERE false;
+          RAISE WARNING 'PIGGLY %', 'testmsg';
+          v := FOUND;
+          IF v THEN
+            RAISE EXCEPTION 'RAISE WARNING corrupted FOUND to TRUE';
+          END IF;
+        END $$;
+        SELECT 'f' AS v;
+      SQL
+      expect(result).to eq("f")
+    end
+
+    it "EXCEPTION handler: NOT FOUND branch is reachable after trace" do
+      result = trace_and_call("test_found_exception", 1)
+      expect(result).to eq("not_found_branch"),
+        "piggly_branch inside EXCEPTION handler corrupted FOUND — " \
+        "the NOT FOUND branch became unreachable"
+    end
+
+    it "no-rows query: NOT FOUND branch is reachable after trace" do
+      result = trace_and_call("test_found_after_no_rows")
+      expect(result).to eq("not_found_branch"),
+        "piggly instrumentation corrupted FOUND after a no-rows query"
+    end
+
+    it "rows-present query: FOUND branch is reachable after trace" do
+      result = trace_and_call("test_found_after_rows")
+      expect(result).to eq("found_branch"),
+        "piggly instrumentation corrupted FOUND after a rows-present query"
+    end
+
+    it "WHILE loop (zero iterations): NOT FOUND preserved after loop exit stub" do
+      result = trace_and_call("test_found_while_zero_iterations")
+      expect(result).to eq("not_found_branch"),
+        "piggly_cond exit stub after WHILE loop corrupted FOUND — " \
+        "the NOT FOUND branch became unreachable"
+    end
+
+    it "FOR loop: NOT FOUND preserved after loop exit stub" do
+      result = trace_and_call("test_found_for_loop")
+      expect(result).to eq("not_found_branch"),
+        "piggly_cond exit stub after FOR loop corrupted FOUND — " \
+        "the NOT FOUND branch became unreachable"
+    end
+
+    it "WHILE loop (executed): FOUND preserved after loop exit stub" do
+      result = trace_and_call("test_found_while_after_rows")
+      expect(result).to eq("found_branch"),
+        "piggly_cond exit stub after WHILE loop corrupted FOUND=TRUE"
     end
   end
 

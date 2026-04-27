@@ -50,6 +50,10 @@ module Piggly
 
     protected
 
+      def trace_prefix
+        @config.trace_prefix
+      end
+
       # Rewrites the parse tree to call instrumentation helpers, and destructively
       # updates `tags` by appending the tags of instrumented nodes
       #   @return [String]
@@ -75,18 +79,19 @@ module Piggly
               tags << node.cond.tag(oid)
 
               # Hack to simulate a loop conditional statement in stmtForLoop and stmtLoop.
-              # signal condition is true when body is executed, and false when exit stub is reached
-              node.bodyStub.source_text  = "perform public.piggly_cond($PIGGLY$#{node.cond.tag_id}$PIGGLY$, true);#{node.indent(:bodySpace)}"
-              node.bodyStub.source_text << "perform public.piggly_branch($PIGGLY$#{node.body.tag_id}$PIGGLY$);#{node.indent(:bodySpace)}"
+              # Use inline RAISE WARNING instead of perform piggly_cond/piggly_branch
+              # to avoid corrupting the FOUND variable.
+              node.bodyStub.source_text  = "RAISE WARNING '#{trace_prefix} % t', $PIGGLY$#{node.cond.tag_id}$PIGGLY$;#{node.indent(:bodySpace)}"
+              node.bodyStub.source_text << "RAISE WARNING '#{trace_prefix} %', $PIGGLY$#{node.body.tag_id}$PIGGLY$;#{node.indent(:bodySpace)}"
 
               if node.respond_to?(:doneStub)
                 # Signal the end of an iteration was reached
-                node.doneStub.source_text  = "#{node.indent(:bodySpace)}perform public.piggly_signal($PIGGLY$#{node.cond.tag_id}$PIGGLY$, $PIGGLY$@$PIGGLY$);"
+                node.doneStub.source_text  = "#{node.indent(:bodySpace)}RAISE WARNING '#{trace_prefix} % %', $PIGGLY$#{node.cond.tag_id}$PIGGLY$, $PIGGLY$@$PIGGLY$;"
                 node.doneStub.source_text << node.body.indent
               end
 
               # Signal the loop terminated
-              node.exitStub.source_text  = "\n#{node.indent}perform public.piggly_cond($PIGGLY$#{node.cond.tag_id}$PIGGLY$, false);"
+              node.exitStub.source_text  = "\n#{node.indent}RAISE WARNING '#{trace_prefix} % f', $PIGGLY$#{node.cond.tag_id}$PIGGLY$;"
             elsif node.respond_to?(:body)
               # Unconditional branches (or blocks)
               #   BEGIN ... END;
@@ -94,7 +99,7 @@ module Piggly
               #   CONTINUE label;
               #   EXIT label;
               tags << node.body.tag(oid)
-              node.bodyStub.source_text = "perform public.piggly_branch($PIGGLY$#{node.body.tag_id}$PIGGLY$);#{node.indent(:bodySpace)}"
+              node.bodyStub.source_text = "RAISE WARNING '#{trace_prefix} %', $PIGGLY$#{node.body.tag_id}$PIGGLY$;#{node.indent(:bodySpace)}"
             end
           end
 

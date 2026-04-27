@@ -21,6 +21,12 @@ module Piggly
       conn.exec(<<-SQL)
         DROP FUNCTION IF EXISTS public.test_branches(integer);
         DROP FUNCTION IF EXISTS public.test_loop(integer);
+        DROP FUNCTION IF EXISTS public.test_found_exception(integer);
+        DROP FUNCTION IF EXISTS public.test_found_after_no_rows();
+        DROP FUNCTION IF EXISTS public.test_found_after_rows();
+        DROP FUNCTION IF EXISTS public.test_found_while_zero_iterations();
+        DROP FUNCTION IF EXISTS public.test_found_for_loop();
+        DROP FUNCTION IF EXISTS public.test_found_while_after_rows();
         DROP FUNCTION IF EXISTS piggly_test_ns.piggly_audit(integer);
         DROP SCHEMA  IF EXISTS piggly_test_ns;
       SQL

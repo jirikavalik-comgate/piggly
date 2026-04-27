@@ -83,50 +83,13 @@ module Piggly
           RETURN value;
         END $$ LANGUAGE 'plpgsql' VOLATILE;
       SQL
-
-      @connection.exec <<-SQL
-        -- Generic signal
-        CREATE OR REPLACE FUNCTION public.piggly_signal(message varchar, signal varchar)
-          RETURNS void AS $$
-        BEGIN
-          RAISE WARNING '#{@config.trace_prefix} % %', message, signal;
-        END $$ LANGUAGE 'plpgsql' VOLATILE;
-      SQL
-
-      @connection.exec <<-SQL
-        -- Signals that a (sub)expression was executed. handles '' and NULL value
-        CREATE OR REPLACE FUNCTION public.piggly_expr(message varchar, value varchar)
-          RETURNS varchar AS $$
-        BEGIN
-          RAISE WARNING '#{@config.trace_prefix} %', message;
-          RETURN value;
-        END $$ LANGUAGE 'plpgsql' VOLATILE;
-      SQL
-
-      @connection.exec <<-SQL
-        -- Signals that a (sub)expression was executed. handles all other types
-        CREATE OR REPLACE FUNCTION public.piggly_expr(message varchar, value anyelement)
-          RETURNS anyelement AS $$
-        BEGIN
-          RAISE WARNING '#{@config.trace_prefix} %', message;
-          RETURN value;
-        END $$ LANGUAGE 'plpgsql' VOLATILE;
-      SQL
-
-      @connection.exec <<-SQL
-        -- Signals that a branch was taken
-        CREATE OR REPLACE FUNCTION public.piggly_branch(message varchar)
-          RETURNS void AS $$
-        BEGIN
-          RAISE WARNING '#{@config.trace_prefix} %', message;
-        END $$ LANGUAGE 'plpgsql' VOLATILE;
-      SQL
     end
 
     # Uninstalls instrumentation support
     def uninstall_support
       @connection.set_notice_processor{|x| $stderr.puts x }
       @connection.exec "DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)"
+      # Legacy helpers that may remain from older piggly versions
       @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)"
       @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)"
       @connection.exec "DROP FUNCTION IF EXISTS public.piggly_branch(varchar)"
