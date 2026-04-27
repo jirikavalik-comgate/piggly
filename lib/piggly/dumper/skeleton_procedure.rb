@@ -8,11 +8,11 @@ module Piggly
     class SkeletonProcedure
 
       attr_reader :oid, :name, :type, :arg_types, :arg_modes, :arg_names,
-        :strict, :setof, :volatility, :secdef, :identifier
+        :strict, :setof, :volatility, :secdef, :identifier, :proconfig
 
-      def initialize(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults)
-        @oid, @name, @strict, @secdef, @type, @volatility, @setof, @arg_modes, @arg_names, @arg_types, @arg_defaults =
-          oid, name, strict, secdef, type, volatility, setof, arg_modes, arg_names, arg_types, arg_defaults
+      def initialize(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig = [])
+        @oid, @name, @strict, @secdef, @type, @volatility, @setof, @arg_modes, @arg_names, @arg_types, @arg_defaults, @proconfig =
+          oid, name, strict, secdef, type, volatility, setof, arg_modes, arg_names, arg_types, arg_defaults, proconfig
 
 
         @identifier = Digest::MD5.hexdigest(signature)
@@ -47,9 +47,14 @@ module Piggly
       # Returns source SQL function definition statement
       # @return [String]
       def definition(body)
-        [%[create or replace function #{name.quote} (#{arguments})],
-         %[ returns #{setof}#{type.quote} as $__PIGGLY__$#{body}],
-         %[$__PIGGLY__$ language plpgsql #{strictness} #{security} #{@volatility}]].join("\n")
+        parts = [%[create or replace function #{name.quote} (#{arguments})],
+                 %[ returns #{setof}#{type.quote} as $__PIGGLY__$#{body}],
+                 %[$__PIGGLY__$ language plpgsql #{strictness} #{security} #{@volatility}]]
+        @proconfig.each do |setting|
+          key, value = setting.split("=", 2)
+          parts << %[SET #{key} = #{value}] if key && value
+        end
+        parts.join("\n")
       end
 
       # @return [String]

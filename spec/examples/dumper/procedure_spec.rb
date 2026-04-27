@@ -228,6 +228,22 @@ module Piggly
           expect(proc.definition("BODY")).to include("stable")
         end
       end
+
+      context "with proconfig SET clauses" do
+        it "emits SET clauses after the language declaration" do
+          proc = make_proc("proconfig" => "search_path=protected,statement_timeout=5000")
+          defn = proc.definition("BODY")
+          expect(defn).to include("SET search_path = protected")
+          expect(defn).to include("SET statement_timeout = 5000")
+        end
+      end
+
+      context "without proconfig SET clauses" do
+        it "doesn't emit any SET clause" do
+          proc = make_proc
+          expect(proc.definition("BODY")).not_to include("SET ")
+        end
+      end
     end
 
     describe "source_path" do
