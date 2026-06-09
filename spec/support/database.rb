@@ -33,11 +33,18 @@ module Piggly
     end
 
     def self.drop_helpers(conn)
-      conn.exec("DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)")
-      conn.exec("DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)")
-      conn.exec("DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)")
-      conn.exec("DROP FUNCTION IF EXISTS public.piggly_branch(varchar)")
-      conn.exec("DROP FUNCTION IF EXISTS public.piggly_signal(varchar, varchar)")
+      # Mirror Installer#uninstall_support: silence "does not exist, skipping"
+      # notices from the legacy DROP IF EXISTS cleanup.
+      conn.exec("SET client_min_messages = warning")
+      begin
+        conn.exec("DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)")
+        conn.exec("DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)")
+        conn.exec("DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)")
+        conn.exec("DROP FUNCTION IF EXISTS public.piggly_branch(varchar)")
+        conn.exec("DROP FUNCTION IF EXISTS public.piggly_signal(varchar, varchar)")
+      ensure
+        conn.exec("RESET client_min_messages")
+      end
     end
   end
 end

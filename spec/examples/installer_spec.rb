@@ -181,6 +181,23 @@ describe "Installer (integration)" do
       expect { installer.send(:uninstall_support) }.not_to raise_error
       installer.send(:install_support, profile)
     end
+
+    it "uninstall_support emits no notices for absent legacy helpers" do
+      # On a database never traced by an older piggly, the legacy helpers
+      # (piggly_expr/branch/signal) don't exist; their DROP IF EXISTS cleanup
+      # must not spew "does not exist, skipping" notices to stderr.
+      captured = StringIO.new
+      original = $stderr
+      begin
+        $stderr = captured
+        installer.send(:uninstall_support)
+      ensure
+        $stderr = original
+      end
+      expect(captured.string).not_to match(/piggly_(expr|branch|signal)/)
+      # Restore so around(:each) cleanup succeeds
+      installer.send(:install_support, profile)
+    end
   end
 
   # -----------------------------------------------------------------------

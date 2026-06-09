@@ -88,12 +88,22 @@ module Piggly
     # Uninstalls instrumentation support
     def uninstall_support
       @connection.set_notice_processor{|x| $stderr.puts x }
-      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)"
-      # Legacy helpers that may remain from older piggly versions
-      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)"
-      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)"
-      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_branch(varchar)"
-      @connection.exec "DROP FUNCTION IF EXISTS public.piggly_signal(varchar, varchar)"
+      # Silence "function ... does not exist, skipping" notices from the
+      # DROP IF EXISTS cleanup below. The legacy helpers are absent on any
+      # database not traced by an older piggly, so those notices are pure
+      # noise on every untrace. Suppressing via client_min_messages is
+      # locale-independent and still lets genuine WARNINGs reach stderr.
+      @connection.exec "SET client_min_messages = warning"
+      begin
+        @connection.exec "DROP FUNCTION IF EXISTS public.piggly_cond(varchar, boolean)"
+        # Legacy helpers that may remain from older piggly versions
+        @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, varchar)"
+        @connection.exec "DROP FUNCTION IF EXISTS public.piggly_expr(varchar, anyelement)"
+        @connection.exec "DROP FUNCTION IF EXISTS public.piggly_branch(varchar)"
+        @connection.exec "DROP FUNCTION IF EXISTS public.piggly_signal(varchar, varchar)"
+      ensure
+        @connection.exec "RESET client_min_messages"
+      end
     end
   end
 
