@@ -8,14 +8,21 @@ module Piggly
     class SkeletonProcedure
 
       attr_reader :oid, :name, :type, :arg_types, :arg_modes, :arg_names,
-        :strict, :setof, :volatility, :secdef, :identifier, :proconfig
+        :strict, :setof, :volatility, :secdef, :identifier, :proconfig, :kind
 
-      def initialize(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig = [])
-        @oid, @name, @strict, @secdef, @type, @volatility, @setof, @arg_modes, @arg_names, @arg_types, @arg_defaults, @proconfig =
-          oid, name, strict, secdef, type, volatility, setof, arg_modes, arg_names, arg_types, arg_defaults, proconfig
+      def initialize(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig = [], kind = "f")
+        @oid, @name, @strict, @secdef, @type, @volatility, @setof, @arg_modes, @arg_names, @arg_types, @arg_defaults, @proconfig, @kind =
+          oid, name, strict, secdef, type, volatility, setof, arg_modes, arg_names, arg_types, arg_defaults, proconfig, kind
 
 
         @identifier = Digest::MD5.hexdigest(signature)
+      end
+
+      # True for PROCEDUREs (pg_proc.prokind = 'p'). Nil-safe: index.yml files
+      # written by older piggly versions have no @kind and load as nil, which
+      # correctly degrades to the historical function behavior.
+      def procedure?
+        @kind == "p"
       end
 
       # Returns source text for argument list
@@ -44,12 +51,22 @@ module Piggly
         @secdef ? "security definer" : nil
       end
 
-      # Returns source SQL function definition statement
+      # Returns source SQL routine definition statement
       # @return [String]
       def definition(body)
-        parts = [%[create or replace function #{name.quote} (#{arguments})],
-                 %[ returns #{setof}#{type.quote} as $__PIGGLY__$#{body}],
-                 %[$__PIGGLY__$ language plpgsql #{strictness} #{security} #{@volatility}]]
+        parts =
+          if procedure?
+            # Procedures reject RETURNS, STRICT and volatility ("invalid
+            # attribute in procedure definition"); security definer and
+            # SET clauses are valid.
+            [%[create or replace procedure #{name.quote} (#{arguments})],
+             %[ as $__PIGGLY__$#{body}],
+             %[$__PIGGLY__$ language plpgsql #{security}]]
+          else
+            [%[create or replace function #{name.quote} (#{arguments})],
+             %[ returns #{setof}#{type.quote} as $__PIGGLY__$#{body}],
+             %[$__PIGGLY__$ language plpgsql #{strictness} #{security} #{@volatility}]]
+          end
         @proconfig.each do |setting|
           key, value = setting.split("=", 2)
           parts << %[SET #{key} = #{value}] if key && value

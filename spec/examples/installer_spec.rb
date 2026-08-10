@@ -259,6 +259,68 @@ describe "Installer (integration)" do
   end
 
   # -----------------------------------------------------------------------
+  describe "PROCEDURE (prokind = p) trace + untrace" do
+
+    let(:commit_proc) do
+      Dumper::ReifiedProcedure.all(conn).find do |p|
+        p.name.to_s == "public.test_procedure_commit"
+      end
+    end
+
+    let(:original_source) { commit_proc.source(config) }
+
+    before(:each) do
+      expect(commit_proc).not_to be_nil
+      commit_proc.store_source(config)
+    end
+
+    after(:each) do
+      conn.exec(commit_proc.definition(original_source)) rescue nil
+      Piggly::DatabaseHelper.drop_helpers(conn)
+    end
+
+    it "is dumped with kind 'p'" do
+      expect(commit_proc.kind).to eq("p")
+      expect(commit_proc.procedure?).to be true
+    end
+
+    it "installs without 'cannot change routine kind' and stays a procedure" do
+      installer.install([commit_proc], profile)
+
+      row = conn.exec(<<-SQL).first
+        SELECT prokind, prosrc FROM pg_proc p
+        JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'public' AND p.proname = 'test_procedure_commit'
+      SQL
+      expect(row["prokind"]).to eq("p")
+      expect(row["prosrc"]).to include("$PIGGLY$")
+    end
+
+    it "instrumented COMMIT still works when CALLed" do
+      installer.install([commit_proc], profile)
+
+      warnings = capture_warnings(conn) do
+        # autocommit exec: CALL is a top-level transaction, COMMIT is legal
+        conn.exec("CALL public.test_procedure_commit(1)")
+      end
+      expect(warnings.any?{|w| w.include?(config.trace_prefix) }).to be true
+    end
+
+    it "source is restored exactly after untrace" do
+      installer.install([commit_proc], profile)
+      installer.uninstall([commit_proc])
+
+      row = conn.exec(<<-SQL).first
+        SELECT prokind, prosrc FROM pg_proc p
+        JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'public' AND p.proname = 'test_procedure_commit'
+      SQL
+      expect(row["prokind"]).to eq("p")
+      expect(row["prosrc"].rstrip).to eq(original_source)
+    end
+  end
+
+  # -----------------------------------------------------------------------
   describe "encoding" do
 
     it "connection client_encoding is UTF8" do

@@ -7,7 +7,7 @@ module Piggly
     #
     class ReifiedProcedure < SkeletonProcedure
 
-      def initialize(source, oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig = [])
+      def initialize(source, oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig = [], kind = "f")
         @source = source.rstrip
 
         if type.name == "record" and type.schema == "pg_catalog" and arg_modes.include?("t")
@@ -20,7 +20,7 @@ module Piggly
           setof        = false
         end
 
-        super(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig)
+        super(oid, name, strict, secdef, setof, type, volatility, arg_modes, arg_names, arg_types, arg_defaults, proconfig, kind)
       end
 
       # @return [String]
@@ -43,7 +43,7 @@ module Piggly
       def skeleton
         SkeletonProcedure.new(@oid, @name, @strict, @secdef, @setof, @type,
                               @volatility, @arg_modes, @arg_names, @arg_types,
-                              @arg_defaults, @proconfig)
+                              @arg_defaults, @proconfig, @kind)
       end
 
       def skeleton?
@@ -94,6 +94,7 @@ module Piggly
             pro.oid,
             nschema.nspname   as nschema,
             pro.proname       as name,
+            pro.prokind       as kind,
             pro.proisstrict   as strict,
             pro.prosecdef     as secdef,
             pro.provolatile   as volatility,
@@ -151,7 +152,8 @@ module Piggly
             defaults(hash["arg_defaults"],
                      hash["arg_defaults_count"].to_i,
                      hash["arg_count"].to_i),
-            hash["proconfig"].to_s.split(",").reject(&:empty?))
+            hash["proconfig"].to_s.split(",").reject(&:empty?),
+            coalesce(hash["kind"], "f"))
       end
 
       def coalesce(value, default)

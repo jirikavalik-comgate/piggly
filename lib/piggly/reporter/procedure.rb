@@ -60,7 +60,8 @@ module Piggly
     private
 
       def signature(procedure)
-        string = "<span class='tK'>CREATE FUNCTION</span> <b><span class='tI'>#{procedure.name}</span></b>"
+        keyword = procedure.procedure? ? "CREATE PROCEDURE" : "CREATE FUNCTION"
+        string  = "<span class='tK'>#{keyword}</span> <b><span class='tI'>#{procedure.name}</span></b>"
 
         if procedure.arg_names.size <= 1
           string   << " ( "
@@ -79,23 +80,30 @@ module Piggly
         end.join(separator)
 
         string << arguments << " )"
-        string << "\n<span class='tK'>RETURNS#{procedure.setof ? ' SETOF' : ''}</span>"
 
-        if procedure.type.table?
-          fields = procedure.type.types.zip(procedure.type.names).map do |rtype, rname|
-            rname = "<span class='tI'>#{rname}</span>\t"
-            rtype = "<span class='tD'>#{rtype}</span>"
-            "#{rname}#{rtype}"
-          end.join(",\n\t")
+        # Procedures have no return type, strictness, or volatility
+        unless procedure.procedure?
+          string << "\n<span class='tK'>RETURNS#{procedure.setof ? ' SETOF' : ''}</span>"
 
-          string << " <span class='tK'>TABLE</span> (\n\t" << fields << " )"
-        else
-          string << " <span class='tD'>#{procedure.type.shorten}</span>"
+          if procedure.type.table?
+            fields = procedure.type.types.zip(procedure.type.names).map do |rtype, rname|
+              rname = "<span class='tI'>#{rname}</span>\t"
+              rtype = "<span class='tD'>#{rtype}</span>"
+              "#{rname}#{rtype}"
+            end.join(",\n\t")
+
+            string << " <span class='tK'>TABLE</span> (\n\t" << fields << " )"
+          else
+            string << " <span class='tD'>#{procedure.type.shorten}</span>"
+          end
         end
 
         string << "\n  <span class='tK'>SECURITY DEFINER</span>" if procedure.secdef
-        string << "\n  <span class='tK'>STRICT</span>" if procedure.strict
-        string << "\n  <span class='tK'>#{procedure.volatility.upcase}</span>"
+
+        unless procedure.procedure?
+          string << "\n  <span class='tK'>STRICT</span>" if procedure.strict
+          string << "\n  <span class='tK'>#{procedure.volatility.upcase}</span>"
+        end
 
         string
       end

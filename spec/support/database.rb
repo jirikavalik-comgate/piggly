@@ -27,6 +27,7 @@ module Piggly
         DROP FUNCTION IF EXISTS public.test_found_while_zero_iterations();
         DROP FUNCTION IF EXISTS public.test_found_for_loop();
         DROP FUNCTION IF EXISTS public.test_found_while_after_rows();
+        DROP PROCEDURE IF EXISTS public.test_procedure_commit(integer);
         DROP FUNCTION IF EXISTS piggly_test_ns.piggly_audit(integer);
         DROP SCHEMA  IF EXISTS piggly_test_ns;
       SQL

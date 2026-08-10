@@ -51,6 +51,18 @@ module Piggly
         expect(proc.volatility).to eq("x")
       end
 
+      it "maps prokind" do
+        proc = Dumper::ReifiedProcedure.from_hash(h("kind" => "p"))
+        expect(proc.kind).to eq("p")
+        expect(proc.procedure?).to be true
+      end
+
+      it "defaults kind to function when absent" do
+        proc = Dumper::ReifiedProcedure.from_hash(h)
+        expect(proc.kind).to eq("f")
+        expect(proc.procedure?).to be false
+      end
+
       it "maps known argument modes" do
         { "i" => "in", "o" => "out", "b" => "inout", "v" => "variadic" }.each do |code, name|
           proc = Dumper::ReifiedProcedure.from_hash(
@@ -242,6 +254,52 @@ module Piggly
         it "doesn't emit any SET clause" do
           proc = make_proc
           expect(proc.definition("BODY")).not_to include("SET ")
+        end
+      end
+
+      context "with a skeleton from a legacy index.yml (no @kind ivar)" do
+        it "degrades to function behavior" do
+          # index.yml files written by piggly < 3.1 serialize SkeletonProcedure
+          # without @kind; loading them must behave like a function
+          yaml = YAML.dump(make_proc.skeleton).lines.reject{|l| l =~ /^kind:/ }.join
+          legacy = YAML.load(yaml, permitted_classes: [
+            Piggly::Dumper::SkeletonProcedure,
+            Piggly::Dumper::QualifiedType,
+            Piggly::Dumper::QualifiedName
+          ])
+
+          expect(legacy.kind).to be_nil
+          expect(legacy.procedure?).to be false
+          expect(legacy.definition("BODY")).to include("create or replace function")
+        end
+      end
+
+      context "with a procedure (prokind = p)" do
+        it "emits CREATE OR REPLACE PROCEDURE" do
+          proc = make_proc("kind" => "p", "nschema" => "myschema", "name" => "my_proc")
+          expect(proc.definition("BODY")).to include('create or replace procedure "myschema"."my_proc"')
+        end
+
+        it "specifies source code between dollar-quoted string tags" do
+          proc = make_proc("kind" => "p")
+          expect(proc.definition("BODY")).to include("$__PIGGLY__$BODY\n$__PIGGLY__$")
+        end
+
+        it "doesn't emit RETURNS, strictness, or volatility" do
+          # strict/volatile are invalid attributes in a procedure definition
+          proc = make_proc("kind" => "p", "strict" => "t", "volatility" => "v")
+          defn = proc.definition("BODY")
+          expect(defn).not_to include("returns")
+          expect(defn).not_to include("strict")
+          expect(defn).not_to include("volatile")
+        end
+
+        it "keeps SECURITY DEFINER and proconfig SET clauses" do
+          proc = make_proc(
+            "kind" => "p", "secdef" => "t", "proconfig" => "search_path=protected")
+          defn = proc.definition("BODY")
+          expect(defn).to include("security definer")
+          expect(defn).to include("SET search_path = protected")
         end
       end
     end

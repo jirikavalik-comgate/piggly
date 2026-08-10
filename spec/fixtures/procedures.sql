@@ -180,3 +180,19 @@ BEGIN
   END IF;
 END;
 $$ LANGUAGE plpgsql VOLATILE;
+
+-- Covers: PROCEDURE (prokind='p') with transaction control -> must be
+-- reinstalled as CREATE OR REPLACE PROCEDURE, not FUNCTION ("cannot change
+-- routine kind"), and instrumentation must not break COMMIT (no wrapping
+-- BEGIN/EXCEPTION block is generated).
+CREATE OR REPLACE PROCEDURE public.test_procedure_commit(x integer)
+ AS $$
+BEGIN
+  IF x > 0 THEN
+    PERFORM 1;
+  ELSE
+    PERFORM 2;
+  END IF;
+  COMMIT;
+END;
+$$ LANGUAGE plpgsql;

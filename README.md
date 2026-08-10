@@ -39,6 +39,7 @@ these events and generates prettified source code that is annotated with coverag
 
 ## Requirements
 
+* PostgreSQL >= 11 (the dumper reads `pg_proc.prokind` to support both functions and procedures)
 * Ruby >= 3.3
 * [Treetop](http://github.com/nathansobo/treetop): `gem install treetop`
 * The [ruby-pg driver](http://bitbucket.org/ged/ruby-pg/): `gem install pg`
